@@ -17,7 +17,7 @@ ADD deps/FreeImage3180.zip /dependencies/FreeImage3180.zip
 ADD deps/cfitsio-4.4.0.tar.gz /dependencies/cfitsio-4.4.0.tar.gz
 ADD deps/hdf5-1.14.3.tar.gz /dependencies/hdf5-1.14.3.tar.gz
 ADD deps/openmpi-3.0.6.tar.gz /dependencies/openmpi-3.0.6.tar.gz
-ADD deps/zlib-1.3.1.tar.gz /dependencies/zlib-1.3.1.tar.gzs
+ADD deps/zlib-1.3.1.tar.gz /dependencies/zlib-1.3.1.tar.gz
 
 ENV LANG en_US.utf8
 
