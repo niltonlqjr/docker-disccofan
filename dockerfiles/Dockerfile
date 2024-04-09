@@ -32,6 +32,7 @@ RUN unzip FreeImage3180.zip \
 
 #instalar zlib (dependencia para o cftisio)
 RUN cd zlib-1.3.1 \
+    && ./configure \
     && make install 
 
 #instalar cfitsio
