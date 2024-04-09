@@ -14,10 +14,11 @@ RUN echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 RUN mkdir -p /dependencies
 
 ADD deps/FreeImage3180.zip /dependencies/FreeImage3180.zip
-ADD deps/cfitsio-4.4.0.tar.gz /dependencies/cfitsio-4.4.0.tar.gz
-ADD deps/hdf5-1.14.3.tar.gz /dependencies/hdf5-1.14.3.tar.gz
-ADD deps/openmpi-3.0.6.tar.gz /dependencies/openmpi-3.0.6.tar.gz
-ADD deps/zlib-1.3.1.tar.gz /dependencies/zlib-1.3.1.tar.gz
+#tar files are added as a filder
+ADD deps/cfitsio-4.4.0.tar.gz /dependencies/cfitsio-4.4.0
+ADD deps/hdf5-1.14.3.tar.gz /dependencies/hdf5-1.14.3
+ADD deps/openmpi-3.0.6.tar.gz /dependencies/openmpi-3.0.6
+ADD deps/zlib-1.3.1.tar.gz /dependencies/zlib-1.3.1
 
 ENV LANG en_US.utf8
 
@@ -30,27 +31,23 @@ RUN unzip FreeImage3180.zip \
     && make install
 
 #instalar zlib (dependencia para o cftisio)
-RUN tar xf zlib-1.3.1.tar.gz \
-    && cd zlib-1.3.1 \
+RUN cd zlib-1.3.1 \
     && make install 
 
 #instalar cfitsio
-RUN tar xf cfitsio-4.4.0.tar.gz \
-    && cd cfitsio-4.4.0 \
+RUN cd cfitsio-4.4.0 \
     && ./configure \
     && make \
     && make install 
 
 #instalar hdf5
-RUN tar xf hdf5-1.14.3.tar.gz \
-    && cd hdf5-1.14.3 \
+RUN cd hdf5-1.14.3 \
     &&  ./configure --prefix=/usr/local/hdf5 \
     && make \
     && make install
 
 #instalar mpi
-RUN tar xf openmpi-3.0.6.tar.gz \
-    && cd openmpi-3.0.6 \
+RUN cd openmpi-3.0.6 \
     && ./configure \
     && make \
     && make install
