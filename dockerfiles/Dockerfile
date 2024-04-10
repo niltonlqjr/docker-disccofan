@@ -15,10 +15,10 @@ RUN mkdir -p /dependencies
 
 ADD deps/FreeImage3180.zip /dependencies/FreeImage3180.zip
 #tar files are added as a filder
-ADD deps/cfitsio-4.4.0.tar.gz /dependencies/cfitsio-4.4.0
-ADD deps/hdf5-1.14.3.tar.gz /dependencies/hdf5-1.14.3
-ADD deps/openmpi-3.0.6.tar.gz /dependencies/openmpi-3.0.6
-ADD deps/zlib-1.3.1.tar.gz /dependencies/zlib-1.3.1
+ADD deps/cfitsio-4.4.0.tar.gz /dependencies/
+ADD deps/hdf5-1.14.3.tar.gz /dependencies/
+ADD deps/openmpi-3.0.6.tar.gz /dependencies/
+ADD deps/zlib-1.3.1.tar.gz /dependencies/
 
 ENV LANG en_US.utf8
 
