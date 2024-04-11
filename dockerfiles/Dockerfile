@@ -55,8 +55,10 @@ RUN cd hdf5-1.14.3 \
 
 USER nonroot
 
-RUN sudo ldconfig
+
 RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+
+RUN sudo ldconfig
 
 WORKDIR /home/nonroot
 
