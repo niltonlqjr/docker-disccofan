@@ -4,7 +4,7 @@ ARG UID
 ARG GID
 
 RUN apt-get update \
-    && apt-get install -y wget sudo locales unzip sudo build-essential \
+    && apt-get install -y wget sudo locales unzip sudo build-essential openssh-client openssh-server\
     libomp-dev 
 
 RUN addgroup --gid $GID nonroot  
@@ -55,7 +55,6 @@ RUN cd hdf5-1.14.3 \
 
 USER nonroot
 
-
 RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
 
 RUN sudo ldconfig
@@ -63,3 +62,6 @@ RUN sudo ldconfig
 WORKDIR /home/nonroot
 
 ADD disccofan/ /disccofan
+
+ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
+           && bash
