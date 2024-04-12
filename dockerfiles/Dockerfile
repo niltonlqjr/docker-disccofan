@@ -3,6 +3,9 @@ FROM ubuntu:20.04
 ARG UID
 ARG GID
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Sao_Paulo
+
 RUN apt-get update \
     && apt-get install -y wget sudo locales unzip sudo build-essential openssh-client openssh-server\
     libomp-dev 
