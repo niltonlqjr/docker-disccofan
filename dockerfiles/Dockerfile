@@ -3,11 +3,13 @@ FROM ubuntu:20.04
 ARG UID
 ARG GID
 
+ARG VOLUME_DIR
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Sao_Paulo
 
 RUN apt-get update \
-    && apt-get install -y wget sudo htop net-tools locales unzip sudo build-essential openssh-client openssh-server\
+    && apt-get install -y git wget sudo htop net-tools locales unzip sudo build-essential openssh-client openssh-server\
     libomp-dev 
 
 RUN addgroup --gid $GID nonroot  
@@ -59,12 +61,16 @@ RUN cd hdf5-1.14.3 \
 USER nonroot
 
 RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
-
 RUN sudo ldconfig
+RUN mkdir -p $VOLUME_DIR
 
-WORKDIR /home/nonroot
+WORKDIR $VOLUME_DIR
 
-ADD disccofan/ /disccofan
+RUN git clone https://github.com/niltonlqjr/disccofan
+
+RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH\
+    && cd disccofan\
+    && make
 
 ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
            && bash
