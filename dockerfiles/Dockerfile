@@ -60,17 +60,17 @@ RUN cd hdf5-1.14.3 \
 
 USER nonroot
 
-RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
-RUN sudo ldconfig
-RUN mkdir -p $VOLUME_DIR
+# RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+# RUN sudo ldconfig
+# RUN mkdir -p $VOLUME_DIR
 
-WORKDIR $VOLUME_DIR
+# WORKDIR $VOLUME_DIR
 
-RUN git clone https://github.com/niltonlqjr/disccofan
+# RUN git clone https://github.com/niltonlqjr/disccofan
 
-RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH\
-    && cd disccofan\
-    && make
+# RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH\
+#     && cd disccofan\
+#     && make
 
-ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
-           && bash
+#ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
+#           && bash
