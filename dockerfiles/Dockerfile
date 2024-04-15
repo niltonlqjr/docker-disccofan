@@ -9,8 +9,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Sao_Paulo
 
 RUN apt-get update \
-    && apt-get install -y git wget sudo htop net-tools locales unzip sudo build-essential openssh-client openssh-server\
-    libomp-dev 
+    &&  apt-get install -y \
+        vim git wget iputils-ping sudo htop net-tools locales \
+        unzip sudo build-essential openssh-client openssh-server \
+        libomp-dev 
 
 RUN addgroup --gid $GID nonroot  
 RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot 
@@ -57,6 +59,8 @@ RUN cd hdf5-1.14.3 \
     &&  ./configure --prefix=/usr/local/hdf5 --enable-parallel \
     && make \
     && make install
+
+EXPOSE 22
 
 USER nonroot
 
