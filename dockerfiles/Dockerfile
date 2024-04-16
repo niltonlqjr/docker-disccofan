@@ -14,9 +14,9 @@ RUN apt-get update \
         unzip sudo build-essential openssh-client openssh-server \
         libomp-dev 
 
-RUN addgroup --gid $GID nonroot  
-RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot 
-RUN echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN addgroup --gid $GID remote  
+RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" remote 
+RUN echo 'remote ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN mkdir -p /dependencies
 
@@ -62,7 +62,12 @@ RUN cd hdf5-1.14.3 \
 
 EXPOSE 22
 
-USER nonroot
+USER remote
+
+WORKDIR /home/remote
+RUN mkdir -p /home/remote/.ssh
+
+COPY ssh_keys/* /home/remote/.ssh/
 
 # RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
 # RUN sudo ldconfig
