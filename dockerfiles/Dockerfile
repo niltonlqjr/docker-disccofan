@@ -71,20 +71,10 @@ RUN mkdir -p /home/remote/.ssh
 
 COPY ssh_keys/* /home/remote/.ssh/
 
+RUN sudo chmod 666 /home/remote/.ssh/*
+
 ENTRYPOINT sudo service ssh start \
            && bash
-
-# RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
-# RUN sudo ldconfig
-# RUN mkdir -p $VOLUME_DIR
-
-# WORKDIR $VOLUME_DIR
-
-# RUN git clone https://github.com/niltonlqjr/disccofan
-
-# RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH\
-#     && cd disccofan\
-#     && make
 
 #ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
 #           && bash
