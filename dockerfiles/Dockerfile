@@ -60,7 +60,9 @@ RUN cd hdf5-1.14.3 \
     && make \
     && make install
 
-EXPOSE 22
+RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
+
+RUN service ssh start
 
 USER remote
 
@@ -68,6 +70,9 @@ WORKDIR /home/remote
 RUN mkdir -p /home/remote/.ssh
 
 COPY ssh_keys/* /home/remote/.ssh/
+
+ENTRYPOINT sudo service ssh start \
+           && bash
 
 # RUN export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
 # RUN sudo ldconfig
