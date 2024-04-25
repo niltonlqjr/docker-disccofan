@@ -74,6 +74,8 @@ COPY ssh_keys/* /home/remote/.ssh/
 RUN sudo chown remote .ssh/*
 RUN sudo chgrp remote .ssh/*
 
+RUN chmod 600 .ssh/*
+
 CMD sudo service ssh start; bash
 
 #ENTRYPOINT sudo service ssh start \
