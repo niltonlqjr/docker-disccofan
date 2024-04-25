@@ -71,6 +71,8 @@ WORKDIR /home/remote
 RUN mkdir -p /home/remote/.ssh
 
 COPY ssh_keys/* /home/remote/.ssh/
+COPY ssh_config/* /home/remote/.ssh/
+
 
 RUN sudo chown remote .ssh/*
 RUN sudo chgrp remote .ssh/*
