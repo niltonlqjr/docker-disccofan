@@ -62,7 +62,7 @@ RUN cd hdf5-1.14.3 \
 
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
-RUN service ssh start
+EXPOSE 22
 
 USER remote
 
@@ -71,10 +71,13 @@ RUN mkdir -p /home/remote/.ssh
 
 COPY ssh_keys/* /home/remote/.ssh/
 
-RUN sudo chmod 666 /home/remote/.ssh/*
+RUN sudo chown remote .ssh/*
+RUN sudo chgrp remote .ssh/*
 
-ENTRYPOINT sudo service ssh start \
-           && bash
+CMD sudo service ssh start; bash
+
+#ENTRYPOINT sudo service ssh start \
+#           && bash
 
 #ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
 #           && bash
