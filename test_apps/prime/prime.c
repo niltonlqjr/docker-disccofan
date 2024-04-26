@@ -34,17 +34,17 @@ void worker(int id){
     MPI_Status st;
     while(1){
         MPI_Send(&a,1,MPI_answer,MANAGER,TAG_ASK_FOR_NUMBER,
-                 MPI_COMM_WORLD);//solicita tarefa ao gerente
+                 MPI_COMM_WORLD);
         MPI_Recv(&t,1,MPI_task,MANAGER,TAG_SEND_NUMBER,
-                 MPI_COMM_WORLD,&st);//recebe tarefa do gerente
+                 MPI_COMM_WORLD,&st);
         if(!t.valid){
             break;
         }
         a.num = t.num;
         a.primo = primo(a.num);
         MPI_Send(&a,1,MPI_answer,MANAGER,TAG_SEND_ANSWER,
-        MPI_COMM_WORLD);//envia resposta ao gerente
-    }//final do laço
+        MPI_COMM_WORLD);
+    }
 }
 void manager(long long int *vet, int size_vet,int num_workers){
     int s,done,tag,i,sender, *finished;
@@ -52,55 +52,52 @@ void manager(long long int *vet, int size_vet,int num_workers){
     answer ans;
     task t;
     MPI_Status st;
-    done = 0;//nenhuma tarefa feita
-    i=0;//nenhuma tarefa enviada
+    done = 0;
+    i=0;
     for(s=0;s<num_workers;s++){
         finished[s]=0;
-    }//nenhum trabalhador terminou sua execução;
+    }
     while(done < size_vet){
         MPI_Recv(&ans,1,MPI_answer,MPI_ANY_SOURCE,MPI_ANY_TAG,
-                 MPI_COMM_WORLD,&st);//recebe mensagem do trabalhador
-        sender=st.MPI_SOURCE;//avalia qual trabalhador enviou
-        tag=st.MPI_TAG;//avalia a tag enviada
-        if(tag == TAG_ASK_FOR_NUMBER){//se a tag for uma solicitação 
-            if(i<size_vet){//verifica se ja enviou todos números
-            //caso não tenha enviado
+                 MPI_COMM_WORLD,&st);
+        sender=st.MPI_SOURCE;
+        tag=st.MPI_TAG;
+        if(tag == TAG_ASK_FOR_NUMBER){
+            if(i<size_vet){
                 t.num = vet[i];
                 t.valid = 1;
                 MPI_Send(&t,1,MPI_task,sender,TAG_SEND_NUMBER,
-                         MPI_COMM_WORLD);//envia o número atual
+                         MPI_COMM_WORLD);
                 i++;
                 
-            }else{// caso ja tenha enviado todos numeros
-                t.valid=0;//seta sinal de bolsa vazia
+            }else{
+                t.valid=0;
                 finished[sender]=1;
                 MPI_Send(&t,1,MPI_task,sender,TAG_SEND_NUMBER,
-                         MPI_COMM_WORLD);//envia sinal de bolsa vazia;
+                         MPI_COMM_WORLD);
             }
-        }else if(tag == TAG_SEND_ANSWER){//caso seja um envio de resposta
-            done++;//incrementa a quantidade de tarefas terminadas
-                    //mostra resultado
+        }else if(tag == TAG_SEND_ANSWER){/
+            done++;
             if(ans.primo){
-                printf("%lld e primo segundo processo:%d\n",ans.num,sender);
+                printf("%lld is a prime number (answer given by process :%d)\n",ans.num,sender);
             }
-        } //fim  if then else para verificar tag
-    }//fim while
-    finished[0]=1;//marca processo gerente como terminado (saiu do laço)
+        } 
+    }
+    finished[0]=1;
     int num_finished = 0;
-    for(s=0;s<num_workers;s++)// conta quantidade de processos que terminaram
+    for(s=0;s<num_workers;s++)
         num_finished+=finished[s];
     while(num_finished < num_workers){
         MPI_Recv(&ans,1,MPI_answer,MPI_ANY_SOURCE,MPI_ANY_TAG,
-                 MPI_COMM_WORLD,&st);//aguarda processos que nao 
-                                    //terminaram solicitarem nova tarefa
-        t.valid=0;//seta sinal de bolsa vazia
+                 MPI_COMM_WORLD,&st);
+        t.valid=0;
         sender=st.MPI_SOURCE;
         MPI_Send(&t,1,MPI_task,sender,TAG_SEND_NUMBER,
-                 MPI_COMM_WORLD);//envia sinal de bolsa vazia 
+                 MPI_COMM_WORLD);
         num_finished++;
     }
-    printf("fim do manager!\n");  
-}// fim do gerente
+    printf("end of manager process!\n");  
+}
 int main(int argc, char *argv[]){
     MPI_Init(&argc, &argv);
     long long int *v;
