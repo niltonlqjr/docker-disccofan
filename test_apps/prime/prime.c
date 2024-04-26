@@ -76,7 +76,7 @@ void manager(long long int *vet, int size_vet,int num_workers){
                 MPI_Send(&t,1,MPI_task,sender,TAG_SEND_NUMBER,
                          MPI_COMM_WORLD);
             }
-        }else if(tag == TAG_SEND_ANSWER){/
+        }else if(tag == TAG_SEND_ANSWER){
             done++;
             if(ans.primo){
                 printf("%lld is a prime number (answer given by process :%d)\n",ans.num,sender);
