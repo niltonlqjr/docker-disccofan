@@ -65,6 +65,9 @@ RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 EXPOSE 22
 EXPOSE 10000-10031
 
+RUN echo 'btl_tcp_port_min = 10000' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl_tcp_port_max = 10031' >> /usr/local/etc/openmpi-mca-params.conf
+
 USER remote
 
 WORKDIR /home/remote
