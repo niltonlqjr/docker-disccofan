@@ -63,6 +63,7 @@ RUN cd hdf5-1.14.3 \
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
 EXPOSE 22
+EXPOSE 2222
 EXPOSE 10000-10031
 
 RUN echo 'btl_tcp_port_min = 10000' >> /usr/local/etc/openmpi-mca-params.conf
