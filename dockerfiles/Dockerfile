@@ -69,7 +69,7 @@ EXPOSE 10000-10032
 RUN echo 'btl_tcp_port_min_v4=10000' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_dynamic_ipv4_ports=10000:10032' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_static_ipv4_ports=10001,10002,10003' >> /usr/local/etc/openmpi-mca-params.conf
+
 
 USER remote
 
