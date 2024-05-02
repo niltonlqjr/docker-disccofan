@@ -71,7 +71,7 @@ RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_dynamic_ipv4_ports=10000:10032' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'plm_rsh_no_tree_spawn=1' >> /usr/local/etc/openmpi-mca-params.conf
+
 
 
 USER remote
