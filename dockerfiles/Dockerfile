@@ -94,12 +94,4 @@ RUN sudo chgrp mpi .ssh/*
 
 RUN chmod 600 .ssh/*
 
-
-
 CMD sudo service ssh start; bash
-
-#ENTRYPOINT sudo service ssh start \
-#           && bash
-
-#ENTRYPOINT export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH \
-#           && bash
