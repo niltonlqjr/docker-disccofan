@@ -70,27 +70,31 @@ EXPOSE 11000-11032
 RUN echo 'btl_tcp_port_min_v4=10000' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl_tcp_if_include=eth*' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
 
-RUN echo 'oob_tcp_if_include=eth*' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_dynamic_ipv4_ports=11000:11032' >> /usr/local/etc/openmpi-mca-params.conf
 
 
+RUN addgroup --gid $GID mpi  
+RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
+RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+USER mpi
+
+WORKDIR /home/mpi
+RUN mkdir -p /home/mpi/.ssh
+
+COPY ssh_keys/* /home/mpi/.ssh/
+COPY ssh_config/* /home/mpi/.ssh/
 
 
-USER remote
-
-WORKDIR /home/remote
-RUN mkdir -p /home/remote/.ssh
-
-COPY ssh_keys/* /home/remote/.ssh/
-COPY ssh_config/* /home/remote/.ssh/
-
-
-RUN sudo chown remote .ssh/*
-RUN sudo chgrp remote .ssh/*
+RUN sudo chown mpi .ssh/*
+RUN sudo chgrp mpi .ssh/*
 
 RUN chmod 600 .ssh/*
+
+
 
 CMD sudo service ssh start; bash
 
