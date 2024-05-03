@@ -58,18 +58,17 @@ RUN cd hdf5-1.14.3 \
 
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
-#EXPOSE 22
-#EXPOSE 2222
-#EXPOSE 10000-10032
-#EXPOSE 11000-11032
+EXPOSE 22
+EXPOSE 2222
+EXPOSE 52000-52032
+EXPOSE 53000-53032
 
-#RUN echo 'btl_tcp_port_min_v4=10000' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
-
-#RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'oob_tcp_dynamic_ipv4_ports=11000:11032' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl_tcp_port_min_v4=52001' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl_tcp_port_range_v4=30' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_dynamic_ipv4_ports=53001:53031' >> /usr/local/etc/openmpi-mca-params.conf
 
 
 RUN addgroup --gid $GID mpi  
