@@ -80,16 +80,16 @@ RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 USER mpi
 
 WORKDIR /home/mpi
-#RUN mkdir -p /home/mpi/.ssh
+RUN mkdir -p /home/mpi/.ssh
 
-#COPY ssh_keys/* /home/mpi/.ssh/
-#COPY ssh_config/* /home/mpi/.ssh/
+COPY ssh_keys/* /home/mpi/.ssh/
+COPY ssh_config/* /home/mpi/.ssh/
 
 
-#RUN sudo chown mpi .ssh/*
-#RUN sudo chgrp mpi .ssh/*
+RUN sudo chown mpi .ssh/*
+RUN sudo chgrp mpi .ssh/*
 
-#RUN chmod 600 .ssh/*
+RUN chmod 600 .ssh/*
 
 
 CMD sudo service ssh start; bash
