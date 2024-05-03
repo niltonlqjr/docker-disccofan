@@ -1,5 +1,5 @@
-VOLUME_DIR="$(realpath $(pwd))/.."                      # Mappped volume
-WORK_DIR="$(realpath $(pwd))/.."                        # Work dir
+#VOLUME_DIR="$(realpath $(pwd))/.."                      # Mappped volume
+#WORK_DIR="$(realpath $(pwd))/.."                        # Work dir
 CONTAINER_CMD="docker"                                  # Container application
 BUILD_CMD="build"                                       # Container application build command
 RUN_CMD="run"                                           # Container application run command
