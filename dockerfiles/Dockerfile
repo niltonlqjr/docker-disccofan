@@ -17,7 +17,7 @@ RUN apt-get update \
 RUN mkdir -p /dependencies
 
 ADD deps/FreeImage3180.zip /dependencies/FreeImage3180.zip
-#tar files are added as a filder
+#tar files are added as a filde
 ADD deps/cfitsio-4.4.0.tar.gz /dependencies/
 ADD deps/hdf5-1.14.3.tar.gz /dependencies/
 ADD deps/openmpi-3.0.6.tar.gz /dependencies/
@@ -58,18 +58,18 @@ RUN cd hdf5-1.14.3 \
 
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
-EXPOSE 22
-EXPOSE 2222
-EXPOSE 10000-10032
-EXPOSE 11000-11032
+#EXPOSE 22
+#EXPOSE 2222
+#EXPOSE 10000-10032
+#EXPOSE 11000-11032
 
-RUN echo 'btl_tcp_port_min_v4=10000' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'btl_tcp_port_min_v4=10000' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'btl_tcp_port_range_v4=32' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
 
-RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_dynamic_ipv4_ports=11000:11032' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'oob_tcp_dynamic_ipv4_ports=11000:11032' >> /usr/local/etc/openmpi-mca-params.conf
 
 
 RUN addgroup --gid $GID mpi  
@@ -80,16 +80,16 @@ RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 USER mpi
 
 WORKDIR /home/mpi
-RUN mkdir -p /home/mpi/.ssh
+#RUN mkdir -p /home/mpi/.ssh
 
-COPY ssh_keys/* /home/mpi/.ssh/
-COPY ssh_config/* /home/mpi/.ssh/
+#COPY ssh_keys/* /home/mpi/.ssh/
+#COPY ssh_config/* /home/mpi/.ssh/
 
 
-RUN sudo chown mpi .ssh/*
-RUN sudo chgrp mpi .ssh/*
+#RUN sudo chown mpi .ssh/*
+#RUN sudo chgrp mpi .ssh/*
 
-RUN chmod 600 .ssh/*
+#RUN chmod 600 .ssh/*
 
 
 CMD sudo service ssh start; bash
