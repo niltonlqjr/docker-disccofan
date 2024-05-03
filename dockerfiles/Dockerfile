@@ -14,10 +14,6 @@ RUN apt-get update \
         unzip sudo build-essential openssh-client openssh-server \
         libomp-dev 
 
-RUN addgroup --gid $GID remote  
-RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" remote 
-RUN echo 'remote ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
 RUN mkdir -p /dependencies
 
 ADD deps/FreeImage3180.zip /dependencies/FreeImage3180.zip
@@ -76,37 +72,24 @@ RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_dynamic_ipv4_ports=11000:11032' >> /usr/local/etc/openmpi-mca-params.conf
 
 
-
-USER remote
-
-WORKDIR /home/remote
-RUN mkdir -p /home/remote/.ssh
-
-COPY ssh_keys/* /home/remote/.ssh/
-COPY ssh_config/* /home/remote/.ssh/
+RUN addgroup --gid $GID mpi  
+RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
+RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 
-RUN sudo chown remote .ssh/*
-RUN sudo chgrp remote .ssh/*
+USER mpi
 
-RUN chmod 600 .ssh/*
+WORKDIR /home/mpi
+RUN mkdir -p /home/mpi/.ssh
 
-#RUN addgroup --gid $GID mpi  
-#RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
-#RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
-USER remote
-
-WORKDIR /home/remote
-RUN mkdir -p /home/remote/.ssh
-
-COPY ssh_keys/* /home/remote/.ssh/
-COPY ssh_config/* /home/remote/.ssh/
+COPY ssh_keys/* /home/mpi/.ssh/
+COPY ssh_config/* /home/mpi/.ssh/
 
 
-RUN sudo chown remote .ssh/*
-RUN sudo chgrp remote .ssh/*
+RUN sudo chown mpi .ssh/*
+RUN sudo chgrp mpi .ssh/*
 
 RUN chmod 600 .ssh/*
+
 
 CMD sudo service ssh start; bash
