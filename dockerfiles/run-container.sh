@@ -6,9 +6,11 @@ CONTAINER_RUN_ARGS="-it --rm"
 NETWORK_PORT="-p 2222:22 -p 52000-52032:52000-52032 -p 53000-53032:53000-53032"
 #NETWORK_PORT="--network host"
 
+
+
 ${CONTAINER_CMD} ${RUN_CMD} ${CONTAINER_RUN_ARGS} ${NETWORK_PORT}\
   --env "SHELL=/bin/bash" \
   --env "LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" \
-  --workdir ${HOME} \
-  --volume ${HOME}:${HOME} \
+  --workdir /home/mpi \
+  --volume ${HOME}:/home/mpi \
   ${CONTAINER_IMAGE}
