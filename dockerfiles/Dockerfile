@@ -84,11 +84,13 @@ RUN mkdir -p /home/mpi/.ssh
 COPY ssh_keys/* /home/mpi/.ssh/
 COPY ssh_config/* /home/mpi/.ssh/
 
-
 RUN sudo chown mpi .ssh/*
 RUN sudo chgrp mpi .ssh/*
 
 RUN chmod 600 .ssh/*
+
+RUN mkdir /home/mpi/host
+
 
 
 CMD sudo service ssh start; bash

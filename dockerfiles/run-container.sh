@@ -1,7 +1,7 @@
 #############################################################################
 #                                                                           #
 # Run a docker container with environmnet variables needed to disccofan.    #
-# Also maps /home/mpi from container to user home                           #
+# Also maps /home/mpi/host from container to user home                           #
 #                                                                           #
 #############################################################################
 
@@ -22,5 +22,5 @@ ${CONTAINER_CMD} ${RUN_CMD} ${CONTAINER_RUN_ARGS} ${NETWORK_PORT}\
   --env "SHELL=/bin/bash" \
   --env "LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" \
   --workdir /home/mpi \
-  --volume ${HOME}:/home/mpi \
+  --volume ${HOME}:/home/mpi/host \
   ${CONTAINER_IMAGE}
