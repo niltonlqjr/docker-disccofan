@@ -68,7 +68,7 @@ RUN echo 'btl_tcp_port_range_v4=30' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_if_include=eth0' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_dynamic_ipv4_ports=53001:53031' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_dynamic_ipv4_ports=53001-53031' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'orte_fwd_mpirun_port=1' >> /usr/local/etc/openmpi-mca-params.conf
 
 RUN addgroup --gid $GID mpi  
