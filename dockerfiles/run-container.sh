@@ -13,7 +13,7 @@ CONTAINER_RUN_ARGS="-it --rm"
 
 # port used to ssh and mpi. These ports are setted in Dockerfile (in this 
 # directory) during container building
-NETWORK_PORT="-p 2222:22 -p 52000-52032:52000-52032 -p 53000-53032:53000-53032 -p 54000-54005:54000-54005"
+NETWORK_PORT="-p 2222:22 -p 52000-53000:52000-53000"
 #NETWORK_PORT="--network host"
 
 
