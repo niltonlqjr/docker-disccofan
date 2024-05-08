@@ -75,11 +75,11 @@ RUN echo 'btl_tcp_if_include = eth0' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'oob_tcp_if_include = eth0' >> /usr/local/etc/openmpi-mca-params.conf
 
 
-#RUN echo 'oob_tcp_dynamic_ipv4_ports = 52101-52131' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_static_ipv4_ports = 52201' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_dynamic_ipv4_ports = 52101-52131' >> /usr/local/etc/openmpi-mca-params.conf
+#RUN echo 'oob_tcp_static_ipv4_ports = 52201' >> /usr/local/etc/openmpi-mca-params.conf
 
-#RUN echo 'oob_tcp_static_ipv4_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'oob_tcp_static_ipv6_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_static_ipv4_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
+RUN echo 'oob_tcp_static_ipv6_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
 
 RUN addgroup --gid $GID mpi  
 RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
