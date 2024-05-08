@@ -60,9 +60,7 @@ RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
 EXPOSE 22
 EXPOSE 2222
-EXPOSE 52000-52032
-EXPOSE 53000-53032
-EXPOSE 54000-54005
+EXPOSE 52000-52300
 
 RUN echo 'orte_fwd_mpirun_port = 1' >> /usr/local/etc/openmpi-mca-params.conf
 RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
