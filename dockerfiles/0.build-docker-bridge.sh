@@ -4,6 +4,7 @@ arg=$1
 if [ $arg == "nompirun" ]
 then
     echo "Building a docker image to a machine that WILL NOT RUN mpirun command"
+    DOCKERFILE_NAME='Dockerfile.nompirun'
 elif [ $arg == "mpirun" ]
 then
     echo "Building a docker image to a machine WILL RUN mpirin command"
