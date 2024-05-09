@@ -1,6 +1,6 @@
 source ./vars.sh
 
-DOCKERFILE_NAME='Dockerfile.host
+DOCKERFILE_NAME='Dockerfile.host'
 
 #args used to build dockerfile
 CONTAINER_BUILD_ARGS="--build-arg UID=$HOST_UID --build-arg GID=$HOST_GID --build-arg VOLUME_DIR=$VOLUME_DIR"
