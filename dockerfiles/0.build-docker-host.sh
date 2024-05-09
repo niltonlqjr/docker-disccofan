@@ -1,6 +1,5 @@
 source ./vars.sh
-#arg=$1
-arg="nompirun"
+
 DOCKERFILE_NAME='Dockerfile.host
 
 #args used to build dockerfile

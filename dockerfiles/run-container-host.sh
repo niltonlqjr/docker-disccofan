@@ -14,7 +14,7 @@ CONTAINER_RUN_ARGS="-it --rm"
 # arg to use network of host machine
 # to use this configuration, the machine must have a mpi user that is can
 # connect to other cluster machines through ssh with public private key.
-NETWORK_ARG="--network host -p 2222:22"
+NETWORK_ARG="--network host"
 
 
 #run container
