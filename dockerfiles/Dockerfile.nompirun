@@ -90,7 +90,7 @@ WORKDIR /home/mpi
 RUN mkdir -p /home/mpi/.ssh
 
 COPY ssh_keys/* /home/mpi/.ssh/
-COPY ssh_config/* /home/mpi/.ssh/
+COPY ssh_config/config.bridge /home/mpi/.ssh/config
 
 RUN sudo chown mpi .ssh/*
 RUN sudo chgrp mpi .ssh/*

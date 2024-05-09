@@ -69,6 +69,8 @@ RUN mkdir -p /home/mpi/.ssh
 
 COPY ssh_keys/* /home/mpi/.ssh/
 
+COPY ssh_config/config.host /home/mpi/.ssh/config
+
 RUN sudo chown mpi .ssh/*
 RUN sudo chgrp mpi .ssh/*
 
