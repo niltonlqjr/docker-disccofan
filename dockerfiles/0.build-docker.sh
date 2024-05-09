@@ -1,18 +1,18 @@
 source ./vars.sh
-
-if [ -n $1 ]
+arg=$1
+if [ $arg == "nompirun" ]
 then
     echo "Building a docker image to a machine that WILL NOT RUN mpirun command"
-elif [ $1 == "mpirun" ]
+elif [ $arg == "mpirun" ]
 then
     echo "Building a docker image to a machine WILL RUN mpirin command"
     DOCKERFILE_NAME='Dockerfile.mpirun'
 else
     echo "Invalid Argumments"
     echo "Usage:"
-    echo "$0 [mpirun]"
-    echo "if mpirun argumment used then the docker image will be build to a machine that will run mpirun command"
-    echo "otherwise, the dockerimage will be build to a machine that will NOT run mpirun command"
+    echo "$0 <mpirun | nompirun>"
+    echo "if mpirun argumment is used then the docker image will be build to a machine that will run mpirun command"
+    echo "if nompirun argumment is used the dockerimage will be build to a machine that will NOT run mpirun command"
     exit 1
 fi
 
