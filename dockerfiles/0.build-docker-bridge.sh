@@ -1,6 +1,5 @@
 source ./vars.sh
-#arg=$1
-arg="nompirun"
+arg=$1
 
 if [ $arg == "nompirun" ]
 then
