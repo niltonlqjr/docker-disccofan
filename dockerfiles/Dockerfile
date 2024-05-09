@@ -58,31 +58,9 @@ RUN cd hdf5-1.14.3 \
 
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
 
-EXPOSE 22
-EXPOSE 2222
-EXPOSE 52000-52300
-
-RUN echo 'orte_fwd_mpirun_port = 1' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl=tcp,self' >> /usr/local/etc/openmpi-mca-params.conf
-
-
-RUN echo 'btl_tcp_port_min_v4 = 52001' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'btl_tcp_port_range_v4 = 30' >> /usr/local/etc/openmpi-mca-params.conf
-
-RUN echo 'btl_tcp_if_include = eth0' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_if_include = eth0' >> /usr/local/etc/openmpi-mca-params.conf
-
-
-#RUN echo 'oob_tcp_dynamic_ipv4_ports = 52101-52131' >> /usr/local/etc/openmpi-mca-params.conf
-#RUN echo 'oob_tcp_static_ipv4_ports = 52201' >> /usr/local/etc/openmpi-mca-params.conf
-
-RUN echo 'oob_tcp_static_ipv4_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
-RUN echo 'oob_tcp_static_ipv6_ports = -1' >> /usr/local/etc/openmpi-mca-params.conf
-
 RUN addgroup --gid $GID mpi  
 RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
 RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
 
 USER mpi
 
@@ -90,7 +68,7 @@ WORKDIR /home/mpi
 RUN mkdir -p /home/mpi/.ssh
 
 COPY ssh_keys/* /home/mpi/.ssh/
-COPY ssh_config/* /home/mpi/.ssh/
+#COPY ssh_config/* /home/mpi/.ssh/
 
 RUN sudo chown mpi .ssh/*
 RUN sudo chgrp mpi .ssh/*
