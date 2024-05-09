@@ -9,7 +9,7 @@
 source ./vars.sh
 
 # args used to run container
-CONTAINER_RUN_ARGS="-it --rm"
+CONTAINER_RUN_ARGS="-it --rm --pid=host"
 
 # arg to use network of host machine
 # to use this configuration, the machine must have a mpi user that is can
