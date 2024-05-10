@@ -78,6 +78,6 @@ RUN chmod 600 .ssh/*
 
 RUN mkdir /home/mpi/host
 
-
+COPY scripts/init_container.sh /home/mpi/
 
 CMD sudo service ssh start; bash

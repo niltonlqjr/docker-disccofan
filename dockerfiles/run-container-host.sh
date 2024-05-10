@@ -8,6 +8,9 @@
 #import some common variables to build container
 source ./vars.sh
 
+ip=$1
+
+
 # args used to run container
 CONTAINER_RUN_ARGS="-it --rm --pid=host"
 
@@ -18,6 +21,7 @@ NETWORK_ARG="--network host"
 
 
 #run container
+echo "START"
 ${CONTAINER_CMD} ${RUN_CMD} ${CONTAINER_RUN_ARGS} ${NETWORK_ARG}\
   --env "SHELL=/bin/bash" \
   --env "LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" \
