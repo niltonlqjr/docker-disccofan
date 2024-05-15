@@ -1,5 +1,5 @@
 VOLUME_DIR="${HOME}"                # Mappped volume
-WORK_DIR="${HOME}"                  # Work dir
+WORK_DIR="${HOME}"                  # Directory that will be used to executables
 CONTAINER_CMD="docker"              # Container application
 BUILD_CMD="build"                   # Container application build command
 RUN_CMD="run"                       # Container application run command
