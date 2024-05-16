@@ -9,7 +9,16 @@
 source ./vars.sh
 
 # args used to run container
-CONTAINER_RUN_ARGS="-it --rm"
+CONTAINER_RUN_ARGS="-it --rm --name ${CONTAINER_NAME}"
+
+RUNNING=`docker ps -a |grep ${CONTAINER_NAME} | awk -F\  '{print $NF}'`
+
+if [ -z $RUNNING ]
+then
+    RUN_CMD="run"
+else
+    RUN_CMD="exec"
+fi
 
 # port used to ssh and mpi. These ports are setted in Dockerfile (in this 
 # directory) during container building
