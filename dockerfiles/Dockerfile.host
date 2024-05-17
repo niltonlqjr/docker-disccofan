@@ -82,4 +82,6 @@ COPY scripts/init_container.sh /home/mpi/
 
 RUN git clone https://github.com/niltonlqjr/cpu_usage.git && cd cpu_usage && make
 
+RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
+
 CMD sudo service ssh start; bash
