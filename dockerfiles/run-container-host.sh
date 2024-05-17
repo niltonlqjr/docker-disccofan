@@ -45,7 +45,6 @@ fi
 echo "START"
 ${CONTAINER_CMD} ${RUN_CMD} ${CONTAINER_RUN_ARGS} ${NETWORK_ARG}\
   --env "SHELL=/bin/bash" \
-  --env "LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" \
   --workdir /home/mpi \
   ${VOLUME_ARG} \
   ${CONTAINER} \
