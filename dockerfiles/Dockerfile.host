@@ -84,6 +84,6 @@ RUN git clone https://github.com/niltonlqjr/cpu_usage.git && cd cpu_usage && mak
 
 RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
 
-RUN echo "export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" >> /home/mpi/.bash_aliases
+RUN echo "export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH" >> /home/mpi/.bashrc
 
 CMD sudo service ssh start; bash
