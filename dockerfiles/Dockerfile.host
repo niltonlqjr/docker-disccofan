@@ -62,6 +62,9 @@ RUN addgroup --gid $GID mpi
 RUN adduser --uid $UID --gid $GID --disabled-password --gecos "" mpi 
 RUN echo 'mpi ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
+RUN echo 'LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /etc/environment
+
+
 USER mpi
 
 WORKDIR /home/mpi
@@ -83,7 +86,5 @@ COPY scripts/init_container.sh /home/mpi/
 RUN git clone https://github.com/niltonlqjr/cpu_usage.git && cd cpu_usage && make
 
 RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
-
-RUN echo 'LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /etc/environment
 
 CMD sudo service ssh start; bash
