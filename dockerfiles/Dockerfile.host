@@ -84,7 +84,8 @@ RUN mkdir /home/mpi/host
 COPY scripts/init_container.sh /home/mpi/
 
 RUN git clone https://github.com/niltonlqjr/cpu_usage.git && cd cpu_usage && make
-
 RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
+
+RUN echo 'export LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /home/mpi/.bashrc
 
 CMD sudo service ssh start; bash
