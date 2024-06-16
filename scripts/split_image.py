@@ -54,6 +54,8 @@ yinc=dims[0]
 xinc=dims[1]
 zinc=dims[2]
 
+count=0
+
 y=0
 while y < im.shape[0]:
     yini = y-1 if y > 1 else y 
@@ -71,9 +73,10 @@ while y < im.shape[0]:
                                   yini,yfim,
                                   xini,xfim,
                                   zini,zfim)
-            imname = f'{out_prefix}-{y}-{x}-{z}{ext}'
+            imname = f'{out_prefix}-{count}{ext}'
             skimage.io.imsave(imname,im_out)
             print(im_out.shape)
+            count+=1
             z+=zinc
         x+=xinc
     y+=yinc
