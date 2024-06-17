@@ -7,19 +7,33 @@ def copia_trecho(image, yini,yfim,xini,xfim,zini,zfim):
     deltay = yfim-yini
     deltax = xfim-xini
     deltaz = zfim-zini
+    if verbose:
+        print('delta:',deltay,deltax,deltaz)
+        print(yini,yfim,xini,xfim,zini,zfim)
     ret=np.zeros(deltay*deltax*deltaz)
     ret = ret.reshape(deltay,deltax,deltaz)
-    ret[0:deltay,0:deltax,0:deltaz] = image[yini:yfim,xini:xfim,zini:zfim]
+    ret[:,:,:] = image[yini:yfim,xini:xfim,zini:zfim]
     return ret.astype(np.uint8)
+
+def print_mat(im,dim):
+    for i in range(len(im)):
+        for j in range(len(im[i])):
+            if dim == 3:
+                print('({:3d}, {:3d}, {:3d})'.format(im[i,j,0],im[i,j,1],im[i,j,2]),end='')
+            elif dim == 2:
+                print('{:4d}'.format(im[i,j]),end='')
+        print('')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', type = str)
 parser.add_argument('--grid', '-g', dest='grid_dim', default='3,2,1', type=str)
 parser.add_argument('--output-prefix', '-o', dest='output_prefix', default='teste',type=str)
+parser.add_argument('--verbose', dest='verbose', action='store_true')
 args=parser.parse_args()
 
 filename = args.filename
 grid_str = args.grid_dim
+verbose = args.verbose
 in_prefix, ext = os.path.splitext(filename)
 out_prefix = args.output_prefix
 grid_dims = np.array([int(i) for i in grid_str.split(',')],dtype=np.int64)
@@ -41,10 +55,11 @@ offsets = [None for i in range(ndims)]
 for d in range(ndims):
     dims[d] = int(im.shape[d])//grid_dims[d]
     offsets[d] = np.arange(grid_dims[d])*dims[d]
+if verbose:
+    print(dims)
+    print(im.shape)
 
-print(dims)
-print(im.shape)
-
+    print_mat(im, 3)
 
 #cart_prod=cartesian_prod(offsets)
 
@@ -95,11 +110,14 @@ while y < im.shape[0]:
                                   xini,xfim,
                                   zini,zfim)
             im_out=skimage.color.rgb2gray(im_out)
-            im_out *= 256
+            im_out *= 255
             im_out=im_out.astype(np.uint8)
             imname = f'{out_prefix}-{count}{ext}'
+            if verbose:
+                print(imname)
+                print_mat(im_out,2)
+                print(im_out.shape)
             skimage.io.imsave(imname,im_out)
-            print(im_out.shape)
             count+=1
             z+=zinc
         x+=xinc
