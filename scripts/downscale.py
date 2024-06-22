@@ -18,15 +18,27 @@ filename = args.filename
 dsf_str = args.downsample_factor
 out_name = args.output_file
 lib = args.library
+verbose = args.verbose
 
 in_prefix, ext = os.path.splitext(filename)
 
-factor = tuple(int(x) for x in dsf_str.split(','))
+factor_lst = list(int(x) for x in dsf_str.split(','))
 
 if lib == 'skimage':
     im = sk.io.imread(filename)
 elif lib == 'imageio':
     im = iio.imread(filename,plugin='JP2-FI')
+
+factor = list(1 for i in range(len(im.shape)))
+min_shape = min(len(factor_lst),len(factor))
+for i in range(min_shape):
+    factor[i] = factor_lst[i]
+
+factor=tuple(factor)    
+
+if verbose:
+    print(factor)
+    print(im.shape)
 
 ds = sk.transform.downscale_local_mean(im,factor)
 ds = np.round(ds)
