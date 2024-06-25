@@ -26,8 +26,8 @@ def print_mat(im,dim):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', type = str)
-parser.add_argument('--grid', '-g', dest='grid_dim', default='3,2,1', type=str)
-parser.add_argument('--output-prefix', '-o', dest='output_prefix', default='teste',type=str)
+parser.add_argument('--grid', '-g', dest='grid_dim', default='4,4,1', type=str)
+parser.add_argument('--output-prefix', '-o', dest='output_prefix', default='',type=str)
 parser.add_argument('--verbose', dest='verbose', action='store_true')
 args=parser.parse_args()
 
@@ -35,7 +35,16 @@ filename = args.filename
 grid_str = args.grid_dim
 verbose = args.verbose
 in_prefix, ext = os.path.splitext(filename)
-out_prefix = args.output_prefix
+
+grid_name = grid_str.replace(',','_')
+grid_name = '__'+grid_name
+
+if args.output_prefix != '':
+    out_prefix = args.output_prefix+grid_name
+else:
+    out_prefix = in_prefix+grid_name
+    
+
 grid_dims = np.array([int(i) for i in grid_str.split(',')],dtype=np.int64)
 grid_dims[0], grid_dims[1] = grid_dims[1], grid_dims[0]
 
@@ -58,7 +67,6 @@ for d in range(ndims):
 if verbose:
     print(dims)
     print(im.shape)
-
     print_mat(im, 3)
 
 #cart_prod=cartesian_prod(offsets)
@@ -71,7 +79,8 @@ count=0
 
 y=0
 while y < im.shape[0]:
-    yini = y-1 if y >= 1 else y 
+    yini = y
+    #yini = y-1 if y >= 1 else y 
     yfim = y+yinc+1 if y+yinc+1 < im.shape[0] else im.shape[0]
     '''
     if y == 0:
@@ -83,7 +92,8 @@ while y < im.shape[0]:
     '''
     x=0
     while x < im.shape[1]:
-        xini = x-1 if x >= 1 else x 
+        xini = x 
+        #xini = x-1 if x >= 1 else x 
         xfim = x+xinc+1 if x+xinc+1 < im.shape[1] else im.shape[1]
         '''
         if x == 0:
@@ -95,7 +105,8 @@ while y < im.shape[0]:
         '''
         z=0
         while z < im.shape[2]:
-            zini = z-1 if z >= 1 else z 
+            zini = z
+            #zini = z-1 if z >= 1 else z 
             zfim = z+zinc+1 if z+zinc+1 < im.shape[2] else im.shape[2]
             '''
             if z == 0:
