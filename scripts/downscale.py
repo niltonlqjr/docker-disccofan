@@ -41,6 +41,10 @@ if verbose:
     print(im.shape)
 
 ds = sk.transform.downscale_local_mean(im,factor)
+
+if verbose:
+    print('downscale from {0} to {1}'.format(im.shape,ds.shape))
+
 ds = np.round(ds)
 ds = ds.astype(np.uint8)
 
