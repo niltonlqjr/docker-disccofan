@@ -133,7 +133,7 @@ int main(int argc, char **argv){
     program_args.factors = default_dim;
     program_args.output_file = "saida.png";
 
-    struct argp args = {args_opts, parse_args, 0, 0};
+    struct argp args = {args_opts, parse_args, "INPUT_FILE", "Program to downscale images using freeimage"};
     
     argp_parse(&args, argc, argv, 0, 0, &program_args);
     
