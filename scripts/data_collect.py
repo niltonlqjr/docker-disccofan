@@ -140,17 +140,16 @@ def run_monitor_loop(lib, devnames):
 
 
 def network_activity_callback(action, data):
-    global data_sent
-    global data_recv
+    global procs
     #print(datetime.datetime.now().strftime('@%H:%M:%S.%f'))
 
     # Action type is either SET or REMOVE. I have never seen nethogs send an unknown action
     # type, and I don't expect it to do so.
     action_type = Action.MAP.get(action, 'Unknown')
-
-    data_sent[data.contents.pid] = data.contents.sent_bytes
-    data_recv[data.contents.pid] = data.contents.recv_bytes
-    process_name[data.contents.pid] = data.contents.name
+    pid = data.contents.pid
+    if pid in procs:
+        procs[pid].data_sent = data.contents.sent_bytes
+        procs[pid].data_recv = data.contents.recv_bytes
     
     '''print('Action: {}'.format(action_type))
     print('Record id: {}'.format(data.contents.record_id))
@@ -164,8 +163,58 @@ def network_activity_callback(action, data):
 
 
 
+class DataProcess:
+    def __init__(self, pid, name):
+        self.pid = pid
+        self.name = name
+        self.mem = 0
+        self.usage = []
+        self.data_sent = 0
+        self.data_recv = 0
 
+    def __repr__(self):
+        return "(pid={}; name={}; mem={}; usage={}; data_sent={}; data_recv={}".format(
+            self.pid, self.name, self.mem, str(self.usage), self.data_sent, self.data_recv
+        )
+        
 
+    def __str__(self):
+        return self.__repr__()
+
+    def save_usage(self, filename):
+        try:
+            with open(filename,'a') as f:
+                for u in self.usage:
+                    f.write(str(u)+'\n')
+                self.usage = []
+            return True
+        except:
+            return False
+    
+    def save_mem(self, filename):
+        try:
+            with open(filename,'a') as f:
+                f.write(str(self.mem)+'\n')
+            return True
+        except:
+            return False
+    
+    def save_network(self, filename, header=False):
+        try:
+            with open(filename,'a') as f:
+                if header:
+                    f.write('Sent \t Recv\n')
+                f.write('{sent}\t{recv}\n'.format(sent=self.data_sent,
+                                                  recv=self.data_recvr))
+            return True
+        except:
+            return False
+    
+    def insert_usage(self, u):
+        self.usage.append(u)
+    
+    def update_mem(self, mem):
+        self.mem_usage = max(self.mem_usage, mem)
 
 #############       Main begins here      ##############
 
@@ -179,11 +228,9 @@ monitor_thread = threading.Thread(
 )
 
 
-data_sent = {}
-data_recv = {}
-process_name = {}
-proc_util = {}
-mem_usage = {}
+procs = {}
+
+
 
 
 
@@ -199,25 +246,24 @@ key=''
 print('type q and enter to close.')
 x = 1
 while x <= 10:
+
     monitor_thread.join(interval_time)
     #print(i)
-    procs = psutil.pids()
-    for pid in procs:
-        try: 
-            proc = psutil.Process(pid)
-            proc_util[pid] = proc.cpu_percent()
-            if pid in mem_usage:
-                mem_usage[pid] = max(mem_usage[pid],proc.memory_full_info().uss)
-            else:
-                mem_usage[pid] = proc.memory_full_info().uss
+    psprocs = psutil.pids()
+    print(psprocs)
+    for pid in psprocs:
+        p = psutil.Process(pid)
+        try:
+            if not (pid in procs):
+                procs[pid] = DataProcess(pid, p.name())
+            procs[pid].update_mem(p.memory_full_info().uss)
+            procs[pid].insert_usage(p.cpu_percent())
         except:
-            print("impossible to get information about process:", pid)
+            pass
+            #print("impossible to get information about process:", pid)
     x+=1
             
 lib.nethogsmonitor_breakloop()
 
-print('enviados:',data_sent)
-print('recebidos:',data_recv)
-print('processos:',process_name)
-print('cpu: ', proc_util)
-print('mem: ', mem_usage)
+for p in procs:
+    print(procs[p])
