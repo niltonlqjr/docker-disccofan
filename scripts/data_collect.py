@@ -4,6 +4,9 @@ import datetime
 import threading
 import psutil
 
+from copy import deepcopy
+
+
 # This is a Python 3 demo of how to interact with the Nethogs library via Python. The Nethogs
 # library operates via a callback. The callback implemented here just formats the data it receives
 # and prints it to stdout. This must be run as root (`sudo python3 python-wrapper.py`).
@@ -164,13 +167,14 @@ def network_activity_callback(action, data):
 
 
 class DataProcess:
-    def __init__(self, pid, name):
+    def __init__(self, pid, psutil_process: psutil.Process):
         self.pid = pid
-        self.name = name
+        self.name = psutil_process.name()
         self.mem = 0
         self.usage = []
         self.data_sent = 0
         self.data_recv = 0
+        self.ps = psutil_process
 
     def __repr__(self):
         return "(pid={}; name={}; mem={}; usage={}; data_sent={}; data_recv={}".format(
@@ -190,7 +194,12 @@ class DataProcess:
             return True
         except:
             return False
-    
+    def update_ps(self):
+        try:
+            self.ps.name()
+        except:
+            print("error: process {self.name} does not exists")
+
     def save_mem(self, filename):
         try:
             with open(filename,'a') as f:
@@ -210,11 +219,17 @@ class DataProcess:
         except:
             return False
     
-    def insert_usage(self, u):
+    def insert_usage(self, verbose=False):
+        u=self.ps.cpu_percent()
+        if verbose:
+            print(f'inserting {u} into usage list of {self.name}')
         self.usage.append(u)
     
-    def update_mem(self, mem):
-        self.mem_usage = max(self.mem_usage, mem)
+    def update_mem(self, verbose=False):
+        mem = self.ps.memory_full_info().uss
+        if verbose:
+            print(f"updating memory with value {mem} of {self.name}")
+        self.mem_usage = max(self.mem, mem)
 
 #############       Main begins here      ##############
 
@@ -241,27 +256,31 @@ monitored_process = 'ssh'
 monitor_thread.start()
 done = False
 
+verbose=False
+
 key=''
 
 print('type q and enter to close.')
-x = 1
-while x <= 10:
+x = 30
+while x >= 0:
 
     monitor_thread.join(interval_time)
     #print(i)
     psprocs = psutil.pids()
-    print(psprocs)
+    #print(psprocs)
     for pid in psprocs:
-        p = psutil.Process(pid)
         try:
             if not (pid in procs):
-                procs[pid] = DataProcess(pid, p.name())
-            procs[pid].update_mem(p.memory_full_info().uss)
-            procs[pid].insert_usage(p.cpu_percent())
+                p = psutil.Process(pid)
+                procs[pid] = DataProcess(pid, p)
+                if verbose:
+                    print(f'process log created {procs[pid].name}')
+            procs[pid].update_mem(verbose=verbose)
+            procs[pid].insert_usage(verbose=verbose)
         except:
-            pass
-            #print("impossible to get information about process:", pid)
-    x+=1
+            #pass
+            print("impossible to get information about process:", pid)
+    x-=1
             
 lib.nethogsmonitor_breakloop()
 
