@@ -3,6 +3,8 @@ import signal
 import datetime
 import threading
 import psutil
+import argparse
+
 
 from copy import deepcopy
 
@@ -153,6 +155,7 @@ def network_activity_callback(action, data):
     if pid in procs:
         procs[pid].data_sent = data.contents.sent_bytes
         procs[pid].data_recv = data.contents.recv_bytes
+        
     
     '''print('Action: {}'.format(action_type))
     print('Record id: {}'.format(data.contents.record_id))
@@ -167,14 +170,14 @@ def network_activity_callback(action, data):
 
 
 class DataProcess:
-    def __init__(self, pid, psutil_process: psutil.Process):
-        self.pid = pid
-        self.name = psutil_process.name()
-        self.mem = 0
-        self.usage = []
-        self.data_sent = 0
-        self.data_recv = 0
-        self.ps = psutil_process
+    def __init__(self, pid: int, psutil_process: psutil.Process):
+        self.pid: int = pid
+        self.name:str  = psutil_process.name()
+        self.mem: list[int] = []
+        self.usage: list[float] = []
+        self.data_sent: int = 0
+        self.data_recv: int = 0
+        self.ps:psutil.Process = psutil_process
 
     def __repr__(self):
         return "(pid={}; name={}; mem={}; usage={}; data_sent={}; data_recv={}".format(
@@ -185,7 +188,7 @@ class DataProcess:
     def __str__(self):
         return self.__repr__()
 
-    def save_usage(self, filename):
+    def save_usage(self, filename: str) -> bool:
         try:
             with open(filename,'a') as f:
                 for u in self.usage:
@@ -194,21 +197,32 @@ class DataProcess:
             return True
         except:
             return False
+        
     def update_ps(self):
         try:
             self.ps.name()
         except:
-            print("error: process {self.name} does not exists")
+            print(f"error: process {self.name} does not exists")
 
-    def save_mem(self, filename):
+    def save_mem(self, filename: str) -> bool:
         try:
             with open(filename,'a') as f:
                 f.write(str(self.mem)+'\n')
             return True
         except:
             return False
+        
+    def mem(self, filename: str) -> bool:
+        try:
+            with open(filename,'a') as f:
+                for m in self.mem:
+                    f.write(str(m)+'\n')
+                self.usage = []
+            return True
+        except:
+            return False
     
-    def save_network(self, filename, header=False):
+    def save_network(self, filename: str, header=False) -> bool:
         try:
             with open(filename,'a') as f:
                 if header:
@@ -219,19 +233,51 @@ class DataProcess:
         except:
             return False
     
-    def insert_usage(self, verbose=False):
-        u=self.ps.cpu_percent()
+    def insert_usage(self, verbose=False, max_len :int = 0):
+        usage=self.ps.cpu_percent()
         if verbose:
-            print(f'inserting {u} into usage list of {self.name}')
-        self.usage.append(u)
+            print(f'inserting {usage} into usage list of {self.name}')
+        self.usage.append(usage)
+            
     
     def update_mem(self, verbose=False):
         mem = self.ps.memory_full_info().uss
         if verbose:
             print(f"updating memory with value {mem} of {self.name}")
-        self.mem_usage = max(self.mem, mem)
+        self.mem_usage.append(mem)
 
 #############       Main begins here      ##############
+
+parser = argparse.ArgumentParser('Program that collect cpu usage, memory and network traffic')
+
+parser.add_argument('monitored_name', type=str, default='a.out',
+                    help='Process that the program will monitor cpu and memory consumption')
+parser.add_argument('-o', '--cpu-output', dest='out_file_cpu', type=str, default='cpu-out.txt',
+                    help='output filename to cpu usage (one mesure by time)')
+parser.add_argument('-m', '--memory-output', dest='out_file_mem', type=str, default='memory-out.txt',
+                    help='output filename to memory consumption')
+parser.add_argument('-b', '--buffer-size', dest='buffer_size', type=int, default=20,
+                    help='total of stored cpu measures before wirte in output file (0 = unlimeted)')
+parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
+                    help='enable prints in stdout')
+parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.3,
+                    help='time between measures')
+parser.add_argument('--block-list', dest='block_list', type=list, nargs='*', 
+                    default=['python3', 'systemd' ])
+
+
+args=parser.parse_args()
+
+
+monitored_name: str = args.monitored_name
+out_file_cpu: str = args.out_file_cpu
+out_file_mem: str = args.out_file_mem
+buffer_size: int = args.buffer_size
+
+verbose: bool = args.verbose
+interval_time = args.interval_time
+
+
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
@@ -243,26 +289,30 @@ monitor_thread = threading.Thread(
 )
 
 
-procs = {}
+procs: dict[int, DataProcess] =  {}
+monitored_pids = {}
 
+#wait until process start
+while monitored_pids == {}:
+    psprocs = psutil.pids()
+    for pid in psprocs:
+        try:
+            p = psutil.Process(pid)
+            if (p.name() == monitored_name):
+                if not (monitored_name in monitored_pids):
+                    monitored_pids[monitored_name] = []
+                monitored_pids[monitored_name].append(p.pid)
+                if verbose:
+                    print(f'process running {procs[pid].name}')
+        except:
+            print("impossible to get information about process:", pid)
+            
 
-
-
-
-interval_time = 0.3
-monitored_process = 'ssh'
-
+print("START!")
 
 monitor_thread.start()
-done = False
 
-verbose=False
-
-key=''
-
-print('type q and enter to close.')
-x = 30
-while x >= 0:
+while monitored_pids[monitored_name] != []:
 
     monitor_thread.join(interval_time)
     #print(i)
@@ -275,14 +325,17 @@ while x >= 0:
                 procs[pid] = DataProcess(pid, p)
                 if verbose:
                     print(f'process log created {procs[pid].name}')
-            procs[pid].update_mem(verbose=verbose)
-            procs[pid].insert_usage(verbose=verbose)
+            if (procs[pid] == monitored_name):
+                procs[pid].update_mem(verbose=verbose)
+                procs[pid].insert_usage(verbose=verbose)
+            if len(procs[pid].usage) > buffer_size:
+                procs[pid].save_usage(out_file_cpu)
+                procs[pid].save_mem(out_file_mem)
         except:
-            #pass
             print("impossible to get information about process:", pid)
-    x-=1
+
             
 lib.nethogsmonitor_breakloop()
-
+p:psutil.Process
 for p in procs:
-    print(procs[p])
+    print(procs[p], p.username())
