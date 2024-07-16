@@ -146,6 +146,7 @@ def run_monitor_loop(lib, devnames):
 
 def network_activity_callback(action, data):
     global procs
+    global lock_dict
     #print(datetime.datetime.now().strftime('@%H:%M:%S.%f'))
 
     # Action type is either SET or REMOVE. I have never seen nethogs send an unknown action
@@ -155,6 +156,11 @@ def network_activity_callback(action, data):
     if pid in procs:
         procs[pid].data_sent = data.contents.sent_bytes
         procs[pid].data_recv = data.contents.recv_bytes
+    else:
+        lock_dict.acquire()
+        if not (pid in procs):
+            procs[pid] = DataProcess(pid, psutil.Process(pid))
+        lock_dict.release()
         
     
     '''print('Action: {}'.format(action_type))
@@ -291,6 +297,8 @@ monitor_thread = threading.Thread(
 
 procs: dict[int, DataProcess] =  {}
 monitored_pids = {}
+lock_dict: threading.Lock = threading.Lock()
+
 
 #wait until process start
 while monitored_pids == {}:
@@ -322,7 +330,12 @@ while monitored_pids[monitored_name] != []:
         try:
             if not (pid in procs):
                 p = psutil.Process(pid)
-                procs[pid] = DataProcess(pid, p)
+                
+                lock_dict.acquire()
+                if not (pid in procs):
+                    procs[pid] = DataProcess(pid, p)
+                lock_dict.release()
+                
                 if verbose:
                     print(f'process log created {procs[pid].name}')
             if (procs[pid] == monitored_name):
