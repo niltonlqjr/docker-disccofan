@@ -1,5 +1,5 @@
 # This project build a dockerfile to run [disccofan](https://github.com/sgazagnes/disccofan)
-## It was built in May 10h, 2024.
+## Its last built was in July 15th, 2024.
 
 # How to Build
 
