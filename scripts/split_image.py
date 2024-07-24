@@ -36,7 +36,8 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
                     help='show messages during processing')
 parser.add_argument('--library', '-l', dest='library', default='skimage',
                     help='library to read image [skimage | imageio]\n imageio uses freeimage')
-parser.add_argument('--overlap', action='store_true', dest='overlap', help='overlap pixel')
+parser.add_argument('--overlap', action='store_true', dest='overlap',
+                    help='neightbours borders included in each image')
 args=parser.parse_args()
 
 filename = args.filename
@@ -65,7 +66,7 @@ ndims = len(grid_dims)
 if plugin == 'skimage':
     im = skimage.io.imread(filename)
 elif plugin == 'imageio':
-    im = iio.imread(filename,plugin='JP2-FI')
+    im = iio.imread(filename)
 else:
     print("invalid plugin")
     exit()
@@ -92,15 +93,14 @@ count=0
 dims = np.arange(ndims, dtype=np.int64)
 
 for tile in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
-    if tile == grid_dims[0]*grid_dims[1]*grid_dims[2]-1:
-        myrank = tile
-        myrank_2D = myrank
+    if tile != grid_dims[0]*grid_dims[1]*grid_dims[2] - 1:
+        myrank = (tile * grid_dims[0]) % (grid_dims[0] * grid_dims[1] -1)
     else:
-        myrank = (tile * grid_dims[1]) % (grid_dims[0] * grid_dims[1] - 1)
-        myrank_2D = myrank % (grid_dims[1]*grid_dims[0])
+        myrank = tile 
+    myrank_2D = myrank % (grid_dims[1]*grid_dims[0])
     myrank_arr = [myrank_2D % grid_dims[0], myrank_2D // grid_dims[0], myrank // (grid_dims[1]*grid_dims[0])]
-    if verbose:
-        print(f'tile {myrank} at {myrank_arr}')
+    #if verbose:
+    print(f'tile {tile} at {[int(myrank_arr[i]) for i in range(len(myrank_arr))]} with rank {myrank}')
     for i in range(2):
         dims[i]  = dims_T[i]//grid_dims[i]
         offsets[i] = myrank_arr[i] * dims[i]
@@ -109,26 +109,27 @@ for tile in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
             offsets[i] += myrank_arr[i]
         else:
             offsets[i] += dims_T[i]%grid_dims[i]
-        if offsets[i] > 0 and overlap:
+        if (offsets[i] > 0) and overlap:
             offsets[i] -= 1
             dims[i] += 1
-        if dims[i] + offsets[i] != dims_T[i] and overlap:
+        if (dims[i] + offsets[i] != dims_T[i]) and overlap:
             dims[i]+=1
-    
-    xini = offsets[0]
-    yini = offsets[1]
-    xfim = offsets[0] + dims[0]
-    yfim = offsets[1] + dims[1]
+    print(f'offsets={offsets}')
+    print(f'dims={dims}')
+    xini = offsets[1]
+    yini = offsets[0]
+    xfim = offsets[1] + dims[1]
+    yfim = offsets[0] + dims[0]
     zini = 0
     zfim = im.shape[2]
     if verbose:
-        print(' x, y, z ranges:',yini,yfim,xini,xfim,zini,zfim)
+        print(' x, y, z ranges:',xini,xfim,yini,yfim,zini,zfim)
     im_out = copia_trecho(im,
-                          yini,yfim,
                           xini,xfim,
+                          yini,yfim,
                           zini,zfim)
     
-    imname = f'{out_prefix}-{myrank}{ext}'
+    imname = f'{out_prefix}-{tile}{ext}'
 
 
     im_out=skimage.color.rgb2gray(im_out)
@@ -138,7 +139,7 @@ for tile in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
     if plugin == 'skimage':
         skimage.io.imsave(imname,im_out)
     elif plugin == 'imageio':
-        iio.imwrite(imname,im_out,plugin='JP2-FI')
+        iio.imwrite(imname,im_out)
     
     if verbose:
         print(imname)

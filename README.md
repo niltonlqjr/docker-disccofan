@@ -6,7 +6,6 @@
 - Inside dockerfile directory run
 ```
 ./0.build-docker-host.sh
-./1.compile-disccofan.sh
 ```
 
 # How to Run
