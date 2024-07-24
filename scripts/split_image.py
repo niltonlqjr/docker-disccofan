@@ -5,14 +5,14 @@ import os
 import imageio.v3 as iio
 import imageio_freeimage
 
-def copia_trecho(image, yini,yfim,xini,xfim,zini,zfim):
-    deltay = yfim-yini
+def copia_trecho(image, xini,xfim,yini,yfim,zini,zfim):
     deltax = xfim-xini
+    deltay = yfim-yini
     deltaz = zfim-zini
     if verbose:
-        print('delta:',deltay,deltax,deltaz)
-        print(yini,yfim,xini,xfim,zini,zfim)
-    ret=np.zeros(deltay*deltax*deltaz)
+        print('delta:',deltax,deltay,deltaz)
+        print(xini,xfim,yini,yfim,zini,zfim)
+    ret=np.zeros(deltax*deltay*deltaz)
     ret = ret.reshape(deltay,deltax,deltaz)
     ret[:,:,:] = image[yini:yfim,xini:xfim,zini:zfim]
     return ret.astype(np.uint8)
@@ -28,7 +28,7 @@ def print_mat(im,dim):
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('filename', type = str)
-parser.add_argument('--grid', '-g', dest='grid_dim', default='4,4,1', type=str,
+parser.add_argument('--grid', '-g', dest='grid_dim', default='3,4,1', type=str,
                     help='the number of divisions for each dimension')
 parser.add_argument('--output-prefix', '-o', dest='output_prefix', default='',type=str,
                     help='prefix of output (each part will be saved as <prefix>-i.<filename format>)')
@@ -36,13 +36,14 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
                     help='show messages during processing')
 parser.add_argument('--library', '-l', dest='library', default='skimage',
                     help='library to read image [skimage | imageio]\n imageio uses freeimage')
+parser.add_argument('--overlap', action='store_true', dest='overlap', help='overlap pixel')
 args=parser.parse_args()
 
 filename = args.filename
 grid_str = args.grid_dim
 verbose = args.verbose
 plugin = args.library
-
+overlap = args.overlap
 in_prefix, ext = os.path.splitext(filename)
 
 
@@ -58,6 +59,8 @@ else:
 grid_dims = np.array([int(i) for i in grid_str.split(',')],dtype=np.int64)
 grid_dims[0], grid_dims[1] = grid_dims[1], grid_dims[0]
 
+print(grid_dims)
+
 ndims = len(grid_dims)
 if plugin == 'skimage':
     im = skimage.io.imread(filename)
@@ -72,9 +75,6 @@ if len(im.shape) != ndims:
     exit()
 
 dims_T = np.zeros(ndims, dtype=np.int64)
-#offsets=np.zeros(np.cumprod(grid_dims)[-1],dtype=np.int64)
-#offsets=offsets.reshape(np.flip(grid_dims))
-#offsets = [None for i in range(ndims)]
 
 offsets = np.zeros(len(grid_dims), dtype=np.int64)
 
@@ -89,13 +89,18 @@ if verbose:
     #print_mat(im, 3)
 
 count=0
-
-
 dims = np.arange(ndims, dtype=np.int64)
 
-for myrank in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
-    myrank_2D = myrank % (grid_dims[1]*grid_dims[0]);
+for tile in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
+    if tile == grid_dims[0]*grid_dims[1]*grid_dims[2]-1:
+        myrank = tile
+        myrank_2D = myrank
+    else:
+        myrank = (tile * grid_dims[1]) % (grid_dims[0] * grid_dims[1] - 1)
+        myrank_2D = myrank % (grid_dims[1]*grid_dims[0])
     myrank_arr = [myrank_2D % grid_dims[0], myrank_2D // grid_dims[0], myrank // (grid_dims[1]*grid_dims[0])]
+    if verbose:
+        print(f'tile {myrank} at {myrank_arr}')
     for i in range(2):
         dims[i]  = dims_T[i]//grid_dims[i]
         offsets[i] = myrank_arr[i] * dims[i]
@@ -104,20 +109,20 @@ for myrank in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
             offsets[i] += myrank_arr[i]
         else:
             offsets[i] += dims_T[i]%grid_dims[i]
-        if offsets[i] > 0:
+        if offsets[i] > 0 and overlap:
             offsets[i] -= 1
             dims[i] += 1
-        if dims[i] + offsets[i] != dims_T[i]:
+        if dims[i] + offsets[i] != dims_T[i] and overlap:
             dims[i]+=1
     
-    yini = offsets[0]
-    xini = offsets[1]
-    yfim = offsets[0] + dims[0]
-    xfim = offsets[1] + dims[1]
+    xini = offsets[0]
+    yini = offsets[1]
+    xfim = offsets[0] + dims[0]
+    yfim = offsets[1] + dims[1]
     zini = 0
     zfim = im.shape[2]
     if verbose:
-        print('y, x, z ranges:',yini,yfim,xini,xfim,zini,zfim)
+        print(' x, y, z ranges:',yini,yfim,xini,xfim,zini,zfim)
     im_out = copia_trecho(im,
                           yini,yfim,
                           xini,xfim,
@@ -137,7 +142,7 @@ for myrank in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
     
     if verbose:
         print(imname)
-        print_mat(im_out,2)
+        #print_mat(im_out,2)
         print(im_out.shape)
     
 '''
