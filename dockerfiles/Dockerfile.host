@@ -73,9 +73,21 @@ RUN cd nethogs \
     && make install \
     && make install install_lib
 
+RUN rm -rf /dependencies/*
+
 USER mpi
 
 WORKDIR /home/mpi
+
+ADD deps/nethogs-v0.8.7-44.tar.gz .
+
+RUN cd nethogs \
+    && make \
+    && sudo make install \
+    && sudo make install install_lib
+
+RUN sudo rm -rf nethogs
+
 RUN mkdir -p /home/mpi/.ssh
 
 COPY ssh_keys/* /home/mpi/.ssh/
