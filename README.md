@@ -15,7 +15,7 @@
     ```
     sudo service ssh stop
     ```
-- Inside dockerfiles directory run:
+- Inside [dockerfiles directory](./dockerfiles/) run:
 ```
 ./run-docker-host.sh
 ```
