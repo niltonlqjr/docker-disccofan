@@ -11,34 +11,7 @@ from time import sleep
 
 
 
-class ProcessNetworkData:
-    def __init__(self, pid: int, name: str):
-        self.pid: int = pid
-        self.name: str  = name
-        self.data_sent: int = 0
-        self.data_recv: int = 0
-    
-    def save_network(self, filename: str, header=False) -> bool:
-        try:
-            with open(filename,'a') as f:
-                if header:
-                    f.write('Sent \t Recv\n')
-                f.write('{sent}\t{recv}\n'.format(sent=self.data_sent,
-                                                  recv=self.data_recv))
-            return True
-        except:
-            return False
-    
-    def __repr__(self):
-        return "(pid={0}; name={1};  data_sent={4}; data_recv={5}".format(
-            self.pid, self.name, self.data_sent, self.data_recv
-        )
 
-    def __str__(self):
-        return self.__repr__()
-
-
-procs: dict[int, ProcessNetworkData] =  {}
 
 # This is a Python 3 demo of how to interact with the Nethogs library via Python. The Nethogs
 # library operates via a callback. The callback implemented here just formats the data it receives
@@ -175,10 +148,9 @@ def run_monitor_loop(lib, devnames):
     else:
         print('exiting monitor loop')
 
-
+## callback function that I did some modifications
 def network_activity_callback(action, data):
     global procs
-    global lock_dict
     #print(datetime.datetime.now().strftime('@%H:%M:%S.%f'))
 
     # Action type is either SET or REMOVE. I have never seen nethogs send an unknown action
@@ -186,18 +158,25 @@ def network_activity_callback(action, data):
     action_type = Action.MAP.get(action, 'Unknown')
     pid = data.contents.pid
     if pid in procs:
+        procs[pid].data_sent = data.contents.sent_bytes
+        procs[pid].data_recv = data.contents.recv_bytes
+    else:
+        procs[pid] = ProcessNetworkData(pid, data.contents.name)
         procs[pid].name = data.contents.name
         procs[pid].pid = data.contents.pid
         procs[pid].data_sent = data.contents.sent_bytes
         procs[pid].data_recv = data.contents.recv_bytes
-    else:
+    
+        
+        '''
         try:
-            if not (pid in procs):
-                procs[pid].data_sent = data.contents.sent_bytes
-                procs[pid].data_recv = data.contents.recv_bytes
+            procs[pid].name = data.contents.name
+            procs[pid].pid = data.contents.pid
+            procs[pid].data_sent = data.contents.sent_bytes
+            procs[pid].data_recv = data.contents.recv_bytes
         except:
             print(f'impossible to create process data to {pid}')
-        
+        '''
      
     
     '''print('Action: {}'.format(action_type))
@@ -211,6 +190,37 @@ def network_activity_callback(action, data):
     print('-' * 30)'''
 
 
+# class used to store network data
+
+class ProcessNetworkData:
+    def __init__(self, pid: int, name: str):
+        self.pid: int = pid
+        self.name: str  = name
+        self.data_sent: int = 0
+        self.data_recv: int = 0
+    
+    def save_network(self, filename: str, header=False) -> bool:
+        try:
+            with open(filename,'a') as f:
+                if header:
+                    f.write('Sent \t Recv\n')
+                f.write('{sent}\t{recv}\n'.format(sent=self.data_sent,
+                                                  recv=self.data_recv))
+            return True
+        except:
+            return False
+    
+    def __repr__(self):
+        return "(pid={0}; name={1};  data_sent={2}; data_recv={3}".format(
+            self.pid, self.name, self.data_sent, self.data_recv
+        )
+
+    def __str__(self):
+        return self.__repr__()
+
+
+procs: dict[int, ProcessNetworkData] =  {}
+
 
 #############       Main begins here      ##############
 
@@ -218,19 +228,12 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('monitored_name', type=str, default='a.out',
                     help='Process that the program will monitor cpu and memory consumption')
-parser.add_argument('-o', '--cpu-output', dest='out_file_cpu', type=str, default='cpu-out.txt',
+parser.add_argument('-o', '--output', dest='out_file', type=str, default='output.txt',
                     help='output filename to cpu usage (one mesure by time)')
-parser.add_argument('-m', '--memory-output', dest='out_file_mem', type=str, default='memory-out.txt',
-                    help='output filename to memory consumption')
-parser.add_argument('-b', '--buffer-size', dest='buffer_size', type=int, default=20,
-                    help='total of stored cpu measures before wirte in output file (0 = unlimeted)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                     help='enable prints in stdout')
 parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=1,
                     help='time between measures')
-parser.add_argument('--ignore-list', dest='block_list', type=list, nargs='*', default=['python3', 'systemd'],
-                    help='process that will be ignore from store data (some network data transfer can'
-                    +' occur with a name that is not the monitored program)')
 
 
 args=parser.parse_args()

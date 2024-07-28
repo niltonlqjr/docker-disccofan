@@ -34,7 +34,7 @@ ADD deps/cfitsio-4.4.0.tar.gz /dependencies/
 ADD deps/hdf5-1.14.3.tar.gz /dependencies/
 ADD deps/openmpi-3.0.6.tar.gz /dependencies/
 ADD deps/zlib-1.3.1.tar.gz /dependencies/
-ADD deps/nethogs-v0.8.7-44.tar.gz /dependencies/
+ADD deps/nethogs-v0.8.6 /dependencies/
 
 
 WORKDIR /dependencies
@@ -68,25 +68,17 @@ RUN cd hdf5-1.14.3 \
     && make \
     && make install
 
-RUN cd nethogs \
+RUN cd nethogs-0.8.6 \
     && make \
-    && make install \
-    && make install install_lib
+    && sudo make install \
+    && sudo make install install_lib
+
 
 RUN rm -rf /dependencies/*
 
 USER mpi
 
 WORKDIR /home/mpi
-
-ADD deps/nethogs-v0.8.7-44.tar.gz .
-
-RUN cd nethogs \
-    && make \
-    && sudo make install \
-    && sudo make install install_lib
-
-RUN sudo rm -rf nethogs
 
 RUN mkdir -p /home/mpi/.ssh
 
@@ -102,7 +94,8 @@ RUN chmod 600 .ssh/*
 RUN mkdir /home/mpi/host
 
 COPY scripts/init_container.sh /home/mpi/
-COPY scripts/data_collect.py /home/mpi/
+COPY scripts/cpu_collect.py /home/mpi/
+COPY scripts/net_collect.py /home/mpi/
 
 RUN pip3 install psutil
 RUN sudo pip3 install psutil

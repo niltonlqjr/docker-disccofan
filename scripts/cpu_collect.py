@@ -129,7 +129,7 @@ while monitored_pids == {}:
     sleep(interval_time)
     for p in psutil.process_iter():
         try:
-            if p.username() == me and p.name() == monitored_name:
+            if p.name() == monitored_name:
                 monitored_pids[p.pid] = True
                 procs[p.pid] = DataProcess(p)
         except:
