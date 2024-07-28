@@ -299,8 +299,7 @@ while monitored_pids != {}:
     for p in pop_vals:
         monitored_pids.pop(p)
 
-    for p in procs:
-        print(procs[p])
+    print(procs)
             
 lib.nethogsmonitor_breakloop()
 
