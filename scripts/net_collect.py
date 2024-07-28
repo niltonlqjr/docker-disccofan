@@ -283,6 +283,8 @@ while monitored_pids != {}:
     monitor_thread.join(interval_time)
 
     for p in psutil.process_iter():
+        if verbose:
+            print(p)
         try:
             if (p.name == monitored_name) and not (p.pid in monitored_pids):
                 monitored_pids[p.pid] = True
