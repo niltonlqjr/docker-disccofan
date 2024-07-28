@@ -62,7 +62,7 @@ device_names = []
 # LIBRARY_NAME has to be exact, although it doesn't need to include the full path.
 # The version tagged as 0.8.7-44-g0fe341e that is installed in this container.
 
-LIBRARY_NAME = 'libnethogs.so.0.8.7-44-g0fe341e'
+LIBRARY_NAME = 'libnethogs.so.0.8.6'
 
 # EXPERIMENTAL: Optionally, specify a capture filter in pcap format (same as
 # used by tcpdump(1)) or None. See `man pcap-filter` for full information.
