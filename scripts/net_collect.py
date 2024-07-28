@@ -9,6 +9,37 @@ import getpass
 from copy import deepcopy
 from time import sleep
 
+
+
+class ProcessNetworkData:
+    def __init__(self, pid: int, name: str):
+        self.pid: int = pid
+        self.name: str  = name
+        self.data_sent: int = 0
+        self.data_recv: int = 0
+    
+    def save_network(self, filename: str, header=False) -> bool:
+        try:
+            with open(filename,'a') as f:
+                if header:
+                    f.write('Sent \t Recv\n')
+                f.write('{sent}\t{recv}\n'.format(sent=self.data_sent,
+                                                  recv=self.data_recv))
+            return True
+        except:
+            return False
+    
+    def __repr__(self):
+        return "(pid={0}; name={1};  data_sent={4}; data_recv={5}".format(
+            self.pid, self.name, self.data_sent, self.data_recv
+        )
+
+    def __str__(self):
+        return self.__repr__()
+
+
+procs: dict[int, ProcessNetworkData] =  {}
+
 # This is a Python 3 demo of how to interact with the Nethogs library via Python. The Nethogs
 # library operates via a callback. The callback implemented here just formats the data it receives
 # and prints it to stdout. This must be run as root (`sudo python3 python-wrapper.py`).
@@ -181,32 +212,6 @@ def network_activity_callback(action, data):
 
 
 
-class ProcessNetworkData:
-    def __init__(self, pid: int, name: str):
-        self.pid: int = pid
-        self.name: str  = name
-        self.data_sent: int = 0
-        self.data_recv: int = 0
-    
-    def save_network(self, filename: str, header=False) -> bool:
-        try:
-            with open(filename,'a') as f:
-                if header:
-                    f.write('Sent \t Recv\n')
-                f.write('{sent}\t{recv}\n'.format(sent=self.data_sent,
-                                                  recv=self.data_recv))
-            return True
-        except:
-            return False
-    
-    def __repr__(self):
-        return "(pid={0}; name={1};  data_sent={4}; data_recv={5}".format(
-            self.pid, self.name, self.data_sent, self.data_recv
-        )
-
-    def __str__(self):
-        return self.__repr__()
-
 #############       Main begins here      ##############
 
 parser = argparse.ArgumentParser()
@@ -255,7 +260,7 @@ monitor_thread = threading.Thread(
 )
 
 #procs is a dict with pids as keys and DataProcess class (declared here) as values
-procs: dict[int, ProcessNetworkData] =  {}
+
 monitored_pids = {}
 lock_dict: threading.Lock = threading.Lock()
 
