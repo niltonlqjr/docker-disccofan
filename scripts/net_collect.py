@@ -1,13 +1,13 @@
 import ctypes
 import signal
 import threading
-from time import sleep
 import argparse
 import psutil
 import sys
+import getpass
 
 from copy import deepcopy
-
+from time import sleep
 
 # This is a Python 3 demo of how to interact with the Nethogs library via Python. The Nethogs
 # library operates via a callback. The callback implemented here just formats the data it receives
