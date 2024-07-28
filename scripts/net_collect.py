@@ -4,6 +4,7 @@ import threading
 from time import sleep
 import argparse
 import psutil
+import sys
 
 from copy import deepcopy
 
@@ -154,6 +155,8 @@ def network_activity_callback(action, data):
     action_type = Action.MAP.get(action, 'Unknown')
     pid = data.contents.pid
     if pid in procs:
+        procs[pid].name = data.contents.name
+        procs[pid].pid = data.contents.pid
         procs[pid].data_sent = data.contents.sent_bytes
         procs[pid].data_recv = data.contents.recv_bytes
     else:
@@ -265,49 +268,33 @@ while monitored_pids == {}:
         try:
             if p.username() == me and p.name() == monitored_name:
                 monitored_pids[p.pid] = True
-                procs[p.pid] = DataProcess(p)
         except:
             print(f'error in process {p.pid}', file=sys.stderr)
             
 
-print("START!")
+print(f"process {monitored_name} START!")
 
 monitor_thread.start()
 
-while monitored_pids[monitored_name] != []:
+while monitored_pids != {}:
 
     monitor_thread.join(interval_time)
-    #sleep(interval_time)
-    #print(i)
-    psprocs = psutil.pids()
-    #print(psprocs)
-    for pid in psprocs:
-        try:
-            if not (pid in procs):
-                p = psutil.Process(pid)
-                if not (pid in procs):
-                    lock_dict.acquire()
-                    if not (pid in procs):
-                        procs[pid] = DataProcess(pid, p)
-                    lock_dict.release()
-                if verbose:
-                    print(f'process log created {procs[pid].name}')
-            if (procs[pid].name == monitored_name):
-                procs[pid].update_mem(verbose=verbose)
-                procs[pid].insert_usage(verbose=verbose)
-            if len(procs[pid].usage) > buffer_size:
-                procs[pid].save_usage(out_file_cpu)
-            if len(procs[pid].mem_usage) > buffer_size:
-                procs[pid].save_mem(out_file_mem)
-        except:
-            print("impossible to get information about process:", pid)
-    
-    for pid in monitored_pids[monitored_name]:
-        if not pid in psprocs:
-            monitored_pids[monitored_name].remove(pid)
 
+    for p in psutil.process_iter():
+        try:
+            if (p.name == monitored_name) and not (p.pid in monitored_pids):
+                monitored_pids[p.pid] = True
+        except:
+            print("impossible to get information about process:", p.pid)
+    
+    pop_vals = []
+    for p in monitored_pids:
+        if not psutil.pid_exists(p):
+            pop_vals.append(p)
+    for p in pop_vals:
+        monitored_pids.pop(p)
             
 lib.nethogsmonitor_breakloop()
-p:psutil.Process
+
 for p in procs:
     print(procs[p].name, procs[p])
