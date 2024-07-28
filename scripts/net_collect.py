@@ -241,6 +241,8 @@ buffer_size: int = args.buffer_size
 verbose: bool = args.verbose
 interval_time = args.interval_time
 
+me = getpass.getuser()
+
 if verbose:
     print(args)
 
