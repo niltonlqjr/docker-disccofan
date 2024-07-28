@@ -199,11 +199,9 @@ class ProcessNetworkData:
         except:
             return False
     
-
-    
     def __repr__(self):
-        return "(pid={0}; name={1}; mem={2}; usage={3}; data_sent={4}; data_recv={5}".format(
-            self.pid, self.name, self.mem_usage, self.cpu_usage, self.data_sent, self.data_recv
+        return "(pid={0}; name={1};  data_sent={4}; data_recv={5}".format(
+            self.pid, self.name, self.data_sent, self.data_recv
         )
 
     def __str__(self):
@@ -279,14 +277,12 @@ print(f"process {monitored_name} START!")
 monitor_thread.start()
 
 while monitored_pids != {}:
-
     monitor_thread.join(interval_time)
-
     for p in psutil.process_iter():
         if verbose:
             print(p)
         try:
-            if (p.name == monitored_name) and not (p.pid in monitored_pids):
+            if (p.name() == monitored_name) and not (p.pid in monitored_pids):
                 monitored_pids[p.pid] = True
         except:
             print("impossible to get information about process:", p.pid)
@@ -297,8 +293,9 @@ while monitored_pids != {}:
             pop_vals.append(p)
     for p in pop_vals:
         monitored_pids.pop(p)
+
+for p in procs:
+    print(procs[p])
             
 lib.nethogsmonitor_breakloop()
 
-for p in procs:
-    print(procs[p].name, procs[p])
