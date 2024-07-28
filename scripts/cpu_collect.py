@@ -21,14 +21,14 @@ class DataProcess:
     def insert_cpu_usage(self, verbose=False):
         usage = self.ps.cpu_percent()
         if verbose:
-            print(f'inserting {usage} into usage list of {self.ps.name}')
+            print(f'inserting {usage} into usage list of {self.ps.name()}')
         self.cpu_usage.append(usage)
             
     
     def insert_mem_usage(self, verbose=False):
         mem_info = self.ps.memory_full_info()
         if verbose:
-            print(f"updating memory with value {mem_info} of {self.ps.name}")
+            print(f"updating memory with value {mem_info} of {self.ps.name()}")
         mem = {}
         mem['uss'] = mem_info.uss
         mem['rss'] = mem_info.rss
@@ -54,9 +54,10 @@ class DataProcess:
         try:
             if verbose:
                 print(f'saving memory usage for process {self.ps.pid}')
-            if header:
-                print('uss\trss\tvms\tdata\n')
+            
             with open(f'{filename}-{self.ps.pid}.txt','a') as f:
+                if header:
+                    f.write('uss\trss\tvms\tdata\n')
                 for m in self.mem_usage:
                     f.write("{uss}\t{rss}\t{vms}\t{data}\n".format(
                         uss=m['uss'],rss=m['rss'],vms=m['vms'],data=m['data'])
@@ -89,23 +90,21 @@ parser.add_argument('-b', '--buffer-size', dest='buffer_size', type=int, default
                     help='total of stored cpu/memory measures before wirte in output file (0 = unlimeted)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                     help='enable prints in stdout')
-parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=1,
+parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.3,
                     help='time between measures')
 
 args=parser.parse_args()
 
-print('teste')
+monitored_name = args.monitored_name
+out_file_cpu = args.out_file_cpu
+out_file_mem = args.out_file_mem
+buffer_size = args.buffer_size
+verbose = args.verbose
+interval_time = args.interval_time
 
-monitored_name: str = args.monitored_name
-out_file_cpu: str = args.out_file_cpu
-out_file_mem: str = args.out_file_mem
-buffer_size: int = args.buffer_size
 
 if buffer_size <= 0:
     buffer_size = float('inf')
-
-verbose: bool = args.verbose
-interval_time = args.interval_time
 
 me = getpass.getuser()
 
@@ -118,7 +117,7 @@ if verbose:
 procs: dict[int, DataProcess] =  {}
 
 # dict to store pid of running process
-monitored_pids = {}
+monitored_pids: dict[int, bool] = {}
 
 
 
@@ -154,9 +153,9 @@ while monitored_pids != {}:
                     saved_mem = procs[p.pid].save_mem_usage(out_file_mem,
                                                 verbose=verbose,
                                                 header=write_header)
+                    write_header = write_header and False
                     saved_cpu = procs[p.pid].save_cpu_usage(out_file_cpu,
                                                 verbose=verbose)
-                
         except:
             print(f'error in process {p.pid}', file=sys.stderr)
     
