@@ -242,10 +242,7 @@ args=parser.parse_args()
 
 
 monitored_name: str = args.monitored_name
-out_file_cpu: str = args.out_file_cpu
-out_file_mem: str = args.out_file_mem
-buffer_size: int = args.buffer_size
-
+out_file: str = args.out_file
 verbose: bool = args.verbose
 interval_time = args.interval_time
 
@@ -296,7 +293,6 @@ while monitored_pids != {}:
                 monitored_pids[p.pid] = True
         except:
             print("impossible to get information about process:", p.pid)
-    
     pop_vals = []
     for p in monitored_pids:
         if not psutil.pid_exists(p):
@@ -308,3 +304,10 @@ while monitored_pids != {}:
             
 lib.nethogsmonitor_breakloop()
 
+p:ProcessNetworkData
+
+with open(out_file) as f:
+    f.write('pid\tname\tdata sent\tdata recv\n')
+    for p in procs:
+        f.write(f'{p.pid}\t{p.name}\t{p.data_recv}\t{p.data_recv}\n')
+    
