@@ -77,7 +77,7 @@ class DataProcess:
 
 #############       Main begins here      ##############
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(help='collect cpu usage and memory consumption of monitored program')
 
 parser.add_argument('monitored_name', type=str, default='a.out',
                     help='Process that the program will monitor cpu and memory consumption')

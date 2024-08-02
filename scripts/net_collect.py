@@ -224,10 +224,12 @@ procs: dict[int, ProcessNetworkData] =  {}
 
 #############       Main begins here      ##############
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(help='collect the network statistics of each process while \
+                                 monitored_name still running (must run as sudo)')
 
 parser.add_argument('monitored_name', type=str, default='a.out',
-                    help='Process that the program will monitor cpu and memory consumption')
+                    help='Process name that is used as criteria stop (while one program with this name \
+                        still running, the monitor keep tracking all process network usage)')
 parser.add_argument('-o', '--output', dest='out_file', type=str, default='output.txt',
                     help='output filename to cpu usage (one mesure by time)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
