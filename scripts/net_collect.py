@@ -308,6 +308,7 @@ p:ProcessNetworkData
 
 with open(out_file,'w') as f:
     f.write('pid\tname\tdata sent\tdata recv\n')
-    for p in procs:
+    for pid in procs:
+        p=procs[pid]
         f.write(f'{p.pid}\t{p.name}\t{p.data_recv}\t{p.data_recv}\n')
     
