@@ -306,7 +306,7 @@ lib.nethogsmonitor_breakloop()
 
 p:ProcessNetworkData
 
-with open(out_file) as f:
+with open(out_file,'w') as f:
     f.write('pid\tname\tdata sent\tdata recv\n')
     for p in procs:
         f.write(f'{p.pid}\t{p.name}\t{p.data_recv}\t{p.data_recv}\n')
