@@ -16,4 +16,4 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 #adicionar o usuário no grupo docker
 sudo usermod -a -G docker manut
 #testar o docker com o container hello-world e remover o container apos sua execucao
-docker run --rm hello-world 
+docker run --rm hello-world
