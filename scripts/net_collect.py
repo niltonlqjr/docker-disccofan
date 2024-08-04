@@ -157,15 +157,16 @@ def network_activity_callback(action, data):
     # type, and I don't expect it to do so.
     action_type = Action.MAP.get(action, 'Unknown')
     pid = data.contents.pid
-    if pid in procs:
-        procs[pid].data_sent = data.contents.sent_bytes
-        procs[pid].data_recv = data.contents.recv_bytes
+    key = str(pid)+str(data.contents.name)
+    if key in procs:
+        procs[key].data_sent = data.contents.sent_bytes
+        procs[key].data_recv = data.contents.recv_bytes
     else:
-        procs[pid] = ProcessNetworkData(pid, data.contents.name)
-        procs[pid].name = data.contents.name
-        procs[pid].pid = data.contents.pid
-        procs[pid].data_sent = data.contents.sent_bytes
-        procs[pid].data_recv = data.contents.recv_bytes
+        procs[key] = ProcessNetworkData(pid, data.contents.name)
+        procs[key].name = data.contents.name
+        procs[key].pid = data.contents.pid
+        procs[key].data_sent = data.contents.sent_bytes
+        procs[key].data_recv = data.contents.recv_bytes
     
         
         '''
@@ -308,7 +309,7 @@ p:ProcessNetworkData
 
 with open(out_file,'w') as f:
     f.write('pid\tname\tdata sent\tdata recv\n')
-    for pid in procs:
-        p=procs[pid]
+    for key in procs:
+        p=procs[key]
         f.write(f'{p.pid}\t{p.name}\t{p.data_recv}\t{p.data_recv}\n')
     
