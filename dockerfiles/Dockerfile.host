@@ -36,7 +36,14 @@ RUN unzip FreeImage3180.zip \
     && make CXXFLAGS="-std=c++11 -O3 -fPIC -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -D__ANSI__ -I. -ISource -ISource/Metadata -ISource/FreeImageToolkit -ISource/LibJPEG -ISource/LibPNG -ISource/LibTIFF4 -ISource/ZLib -ISource/LibOpenJPEG -ISource/OpenEXR -ISource/OpenEXR/Half -ISource/OpenEXR/Iex -ISource/OpenEXR/IlmImf -ISource/OpenEXR/IlmThread -ISource/OpenEXR/Imath -ISource/OpenEXR/IexMath -ISource/LibRawLite -ISource/LibRawLite/dcraw -ISource/LibRawLite/internal -ISource/LibRawLite/libraw -ISource/LibRawLite/src -ISource/LibWebP -ISource/LibJXR -ISource/LibJXR/common/include -ISource/LibJXR/image/sys -ISource/LibJXR/jxrgluelib" \
     && make install
 
-    #install zlib (dependencie of cftisio)
+#install open mpoi
+ADD deps/openmpi-3.0.6.tar.gz /dependencies/
+RUN cd openmpi-3.0.6 \
+    && ./configure \
+    && make \
+    && make install
+
+#install zlib (dependencie of cftisio)
 ADD deps/zlib-1.3.1.tar.gz /dependencies/
 RUN cd zlib-1.3.1 \
     && ./configure \
@@ -56,26 +63,29 @@ RUN cd hdf5-1.14.3 \
     && make \
     && make install
 
-#install open mpoi
-ADD deps/openmpi-3.0.6.tar.gz /dependencies/
-RUN cd openmpi-3.0.6 \
-    && ./configure \
-    && make \
-    && make install
-    
 #install nethogs
 ADD deps/nethogs-0.8.7.tar.gz /dependencies/
 RUN cd nethogs-0.8.7 \
     && make \
-    && sudo make install \
-    && sudo make install install_lib
-
+    && make install \
+    && make install install_lib
 
 RUN rm -rf /dependencies/*
 
 USER mpi
 
 WORKDIR /home/mpi
+
+
+#install nethogs on mpi user
+ADD deps/nethogs-0.8.7.tar.gz /home/mpi/
+RUN cd nethogs-0.8.7 \
+    && make \
+    && sudo make install \
+    && sudo make install install_lib
+
+RUN sudo rm nethogs-0.8.7
+
 
 RUN mkdir -p /home/mpi/.ssh
 
