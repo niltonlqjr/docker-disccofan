@@ -5,6 +5,10 @@ import os
 import imageio.v3 as iio
 import imageio_freeimage
 
+from PIL import Image
+
+Image.MAX_IMAGE_PIXELS = None
+
 def copia_trecho(image, xini,xfim,yini,yfim,zini,zfim):
     deltax = xfim-xini
     deltay = yfim-yini
