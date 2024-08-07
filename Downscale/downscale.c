@@ -11,6 +11,7 @@ struct Arguments{
     char *filename;
     char *output_file;
     char *img_ext;
+    int gray_scale;
 };
 
 void upcase_string(char *str){
@@ -98,7 +99,9 @@ static int parse_args(int key, char *arg, struct argp_state *state){
     struct Arguments *program_args = state->input;
     int *dims, dims_size, len;
 
-    if(key == 'f'){
+    if(key == 'g'){
+        program_args->gray_scale = 1;
+    }else if(key == 'f'){
         vector_from_string(arg, ',', &dims, &dims_size);
         if(dims_size != 2){
             printf("The number of dimensions of downscale factor must be 2");
@@ -122,17 +125,17 @@ static int parse_args(int key, char *arg, struct argp_state *state){
 
 int main(int argc, char **argv){
     struct argp_option args_opts[] = {
+        {0, 'g', "",0, "flag to set output in grayscale"},
         {0,'f',"DIMS",0,"Downscale factor comma separated"},
         {0,'o',"FILENAME",0,"Output file name"},
         {0}
     };
     int default_dim[] = {2,2};
-
     struct Arguments program_args;
 
     program_args.factors = default_dim;
     program_args.output_file = "downscaled.png";
-
+    program_args.gray_scale = 0;
     struct argp args = {args_opts, parse_args, "INPUT_FILE", "Program to downscale images using freeimage"};
     
     argp_parse(&args, argc, argv, 0, 0, &program_args);
@@ -147,7 +150,7 @@ int main(int argc, char **argv){
     printf("Input:%s \nOutput:%s\n",filename,output);
     printf("Reduction factor: (%d,%d)\n", factors[0], factors[1]);
 
-    img = GenericLoader(filename,0,true);
+    img = GenericLoader(filename,0,program_args.gray_scale);
 
     if(img == NULL){
         printf("Error loading the image %s\n",filename);
