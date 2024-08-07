@@ -136,9 +136,9 @@ for tile in range(grid_dims[0]*grid_dims[1]*grid_dims[2]):
     imname = f'{out_prefix}-{tile}{ext}'
 
 
-    im_out=skimage.color.rgb2gray(im_out)
-    im_out *= 255
-    im_out=im_out.astype(np.uint8)
+    #im_out=skimage.color.rgb2gray(im_out)
+    #im_out *= 255
+    #im_out=im_out.astype(np.uint8)
     
     if plugin == 'skimage':
         skimage.io.imsave(imname,im_out)
