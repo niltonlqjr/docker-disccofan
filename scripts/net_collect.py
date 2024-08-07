@@ -269,6 +269,8 @@ lock_dict: threading.Lock = threading.Lock()
 
 
 #wait until process start
+if verbose:
+    print(f'waiting for a process with name {monitored_name} starts...')
 
 while monitored_pids == {}:
     sleep(interval_time)

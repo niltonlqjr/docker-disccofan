@@ -5,9 +5,10 @@ import os
 import imageio.v3 as iio
 import imageio_freeimage
 
-from PIL import Image
+from PIL import Image, ImageFile
 
 Image.MAX_IMAGE_PIXELS = None
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def copia_trecho(image, xini,xfim,yini,yfim,zini,zfim):
     deltax = xfim-xini
