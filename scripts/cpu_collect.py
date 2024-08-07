@@ -124,19 +124,22 @@ monitored_pids: dict[int, bool] = {}
 if verbose:
     print(f'waiting for a process with name {monitored_name} starts...')
 
+write_header = {}
+
 while monitored_pids == {}:
     sleep(interval_time)
     for p in psutil.process_iter():
         try:
             if p.name() == monitored_name:
                 monitored_pids[p.pid] = True
+                write_header[p.pid] = True
                 procs[p.pid] = DataProcess(p)
         except:
             print(f'error in process {p.pid}', file=sys.stderr)
 if verbose:
     print(f"Process {monitored_name} START!")
 
-write_header = True
+
 
 while monitored_pids != {}:
     sleep(interval_time)
@@ -146,18 +149,18 @@ while monitored_pids != {}:
                 if not(p.pid in procs):
                     procs[p.pid] = DataProcess(p)
                     monitored_pids[p.pid] = True
+                    write_header[p.pid] = True
                 procs[p.pid].insert_cpu_usage(verbose=verbose)
                 procs[p.pid].insert_mem_usage(verbose=verbose)
                 if len(procs[p.pid].cpu_usage) > buffer_size:
-                    saved_mem = procs[p.pid].save_mem_usage(out_file_mem,
+                    procs[p.pid].save_mem_usage(out_file_mem,
                                                 verbose=verbose,
-                                                header=write_header)
-                    write_header = write_header and False
-                    saved_cpu = procs[p.pid].save_cpu_usage(out_file_cpu,
+                                                header=write_header[p.pid])
+                    procs[p.pid].save_cpu_usage(out_file_cpu,
                                                 verbose=verbose)
+                    write_header[p.pid] = write_header[p.pid] and False
         except:
             print(f'error in process {p.pid}', file=sys.stderr)
-    
     pop_vals = []
     for p in monitored_pids:
         if not psutil.pid_exists(p):
