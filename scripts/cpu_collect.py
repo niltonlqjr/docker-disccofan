@@ -75,9 +75,47 @@ class DataProcess:
     def __str__(self):
         return self.__repr__()
 
+
+class ProcessorMonitor:
+    def __init__(self):
+        self.m = []
+    
+    def __len__(self):
+        return len(self.m)
+
+    def insert_measure(self, m:list[psutil._pslinux.scputimes]):
+        self.m.append(m)
+    
+    def save_measures(self, filename: str, verbose: bool = False, header: bool = False):
+        #try:
+        if verbose:
+            print(f'saving system cpu usage')
+        
+        for cpu_id in range(len(self.m[0])):
+            with open(f'{filename}-SystemCPU-{cpu_id}.txt','a') as f:
+                if header:
+                    f.write('User\tNice\tSystem\tIdle\
+                            \tio wait\tHardware Interrupts (irq)\tSoftware Interrupts (softirq)\t\
+                            Steal by other OSs\tGuest\tGuest Nice\n')
+                for m in self.m:
+                    f.write("{user}\t{nice}\t{system}\t{idle}\t{iowait}\t{irq}\t{softirq}\t{steal}\t{guest}\t{guest}\t{guest_nice}\n".format(
+                        user=m[cpu_id].user,nice=m[cpu_id].nice,system=m[cpu_id].system,idle=m[cpu_id].idle,
+                        iowait=m[cpu_id].iowait,irq=m[cpu_id].irq,softirq=m[cpu_id].softirq,
+                        steal=m[cpu_id].steal,guest=m[cpu_id].guest,guest_nice=m[cpu_id].guest_nice)
+                    )
+        self.m = []
+        return True
+        #except:
+        #    print(f'error cpu usage',file=sys.stderr)
+        #    return False
+
+
 #############       Main begins here      ##############
 
-parser = argparse.ArgumentParser(description='collect cpu usage and memory consumption of monitored program')
+parser = argparse.ArgumentParser(description='Collect cpu usage and memory consumption of monitored program.\n\
+                                 The cpu usage is collected by process (<cpu-output-prefix>-pid.txt) and by \
+                                 processor(<cpu-output-prefix>-SystemCPU-ProcessorID.txt).\n\
+                                 The memory consumption is collect by process (<memory-output-prexix>-pid.txt)')
 
 parser.add_argument('monitored_name', type=str, default='a.out',
                     help='Process that the program will monitor cpu and memory consumption')
@@ -89,6 +127,8 @@ parser.add_argument('-b', '--buffer-size', dest='buffer_size', type=int, default
                     help='total of stored cpu/memory measures before wirte in output file (0 = unlimeted)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                     help='enable prints in stdout')
+parser.add_argument('-p', '--per-cpu', dest='per_cpu', action='store_true', default=False,
+                    help='store the cpu (total cpu usage) usage per cpu')
 parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.3,
                     help='time between measures')
 
@@ -100,6 +140,7 @@ out_file_mem = args.out_file_mem
 buffer_size = args.buffer_size
 verbose = args.verbose
 interval_time = args.interval_time
+per_cpu = args.per_cpu
 
 
 if buffer_size <= 0:
@@ -118,13 +159,17 @@ procs: dict[int, DataProcess] =  {}
 # dict to store pid of running process
 monitored_pids: dict[int, bool] = {}
 
-
+#processor monitor
+processor = ProcessorMonitor()
 
 #wait until process start
 if verbose:
     print(f'waiting for a process with name {monitored_name} starts...')
 
 write_header = {}
+proc_header = True
+
+
 
 while monitored_pids == {}:
     sleep(interval_time)
@@ -143,6 +188,14 @@ if verbose:
 
 while monitored_pids != {}:
     sleep(interval_time)
+    processor.insert_measure(psutil.cpu_times_percent(percpu=
+                                                      True))
+    if len(processor) > buffer_size:
+        processor.save_measures(out_file_cpu,
+                                verbose=verbose,
+                                header=proc_header)
+        proc_header = proc_header and False
+        
     for p in psutil.process_iter():
         try:
             if p.username() == me and p.name() == monitored_name:
