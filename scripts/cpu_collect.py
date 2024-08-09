@@ -104,7 +104,6 @@ class ProcessorMonitor:
         self.m.append(m)
     
     def save_measures(self, filename: str, verbose: bool = False, header: bool = False):
-        #try:
         if verbose:
             print(f'saving system cpu usage')
         if len(self.m) > 0:
@@ -123,9 +122,6 @@ class ProcessorMonitor:
             return True
         else:
             return False
-        #except:
-        #    print(f'error cpu usage',file=sys.stderr)
-        #    return False
 
 
 #############       Main begins here      ##############
