@@ -43,6 +43,8 @@ parser.add_argument('--library', '-l', dest='library', default='skimage',
                     help='library to read image [skimage | imageio]\n imageio uses freeimage')
 parser.add_argument('--overlap', action='store_true', dest='overlap',
                     help='neightbours borders included in each image')
+parser.add_argument('--create-dir', '-c', dest='create_dir', action='store_true',
+                    help='create output directory if it does not exists')
 args=parser.parse_args()
 
 filename = args.filename
@@ -60,7 +62,22 @@ if args.output_prefix != '':
     out_prefix = args.output_prefix+grid_name
 else:
     out_prefix = in_prefix+grid_name
+
+if args.create_dir:
+    path_out,_ = os.path.split(out_prefix)
+    try:
+        os.makedirs(path_out)
+    except FileExistsError as path_exist:
+        print(f'Directory "{path_out}" already exists')
+        if not os.access(path_out, os.W_OK):
+            print(f'You have no permission to write on directory: {path_out}')
+            exit()
+    except Exception as erro:
+        print('Unable to create directory:')
+        print(erro)
+        exit()
     
+
 
 grid_dims = np.array([int(i) for i in grid_str.split(',')],dtype=np.int64)
 grid_dims[0], grid_dims[1] = grid_dims[1], grid_dims[0]
