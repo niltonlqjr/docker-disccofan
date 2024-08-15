@@ -1,4 +1,4 @@
-FILE_CMD='~/container_command.txt'
+FILE_CMD='container_command.txt'
 sudo ls
 while true;
 do
