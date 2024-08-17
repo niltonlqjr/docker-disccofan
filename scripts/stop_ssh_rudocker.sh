@@ -7,7 +7,7 @@ then
     exit 1
 fi
 
-echo "stopping ssh service, changing directory to ${dir_script} and running ./run-container-host.sh in 5 seconds"
+echo "stopping ssh service, changing directory to ${dir_script} and running run-container-host.sh in 5 seconds"
 
 sleep 5
 
