@@ -1,3 +1,3 @@
 sudo service ssh stop
-cd ../dockerfiles
+cd ~/docker-disccofan/dockerfiles
 ./run-container-host.sh
