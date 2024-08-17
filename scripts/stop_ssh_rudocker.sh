@@ -1,3 +1,13 @@
+dir_script=$1
+
+if [ -z $1 ]
+then
+    echo "Usage: $0 directory"
+    echo "where <directory> is the directory that contains scritp to start container"
+    exit 1
+fi
+
+
 sudo service ssh stop
-cd ~/docker-disccofan/dockerfiles
+cd ${dir_script}
 ./run-container-host.sh
