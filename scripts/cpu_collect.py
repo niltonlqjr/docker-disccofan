@@ -203,7 +203,7 @@ print(write_header)
 while monitored_pids != {}:
     sleep(interval_time)
     processor.insert_measure(psutil.cpu_times_percent(percpu=
-                                                      True))
+                                                      per_cpu))
     if len(processor) > buffer_size:
         processor.save_measures(out_file_cpu,
                                 verbose=verbose,
