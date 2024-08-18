@@ -20,7 +20,7 @@ do
         do
             output_complete_dir=${OUT_PREFIX}/dim_${d1}-${d2}-1/proc_per_host${PROC_PER_HOST}
             echo "grid: ${d1},${d2},1 => np: ${num_proc}, per host: ${PROC_PER_HOST}, ${exec}"
-            sudo python3 $script -o ${output_file_name}/network_out_exec${exec}.txt -i 0.5 disccofan
+            sudo python3 $script -o ${output_complete_dir}/network_out_exec${exec}.txt -i 0.5 disccofan
         done
     done
 done
