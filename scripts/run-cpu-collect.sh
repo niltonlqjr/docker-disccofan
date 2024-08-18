@@ -12,7 +12,7 @@ do
     d1=`echo $dim | awk '{split($0,a," "); print a[1]}'`
     d2=`echo $dim | awk '{split($0,a," "); print a[2]}'`
     num_proc=`expr ${d1} '*' ${d2}`
-    PROC_PER_HOST=`expr i + 1`
+    PROC_PER_HOST=`expr $i + 1`
     mkdir -p ${OUT_PREFIX}/dim_${d1}-${d2}-1/proc_per_host${PROC_PER_HOST}/
     for ((exec=1;$exec<=$NUM_EXECS;exec+=1))
     do

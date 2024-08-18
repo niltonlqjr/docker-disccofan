@@ -13,7 +13,7 @@ do
     d1=`echo $dim | awk '{split($0,a," "); print a[1]}'`
     d2=`echo $dim | awk '{split($0,a," "); print a[2]}'`
     in_prefix_img=${INP_DIR}/dim_${d1}-${d2}-1/IMG_PHR1A__${d1}_${d2}_1
-    PROC_PER_HOST=`expr i + 1`
+    PROC_PER_HOST=`expr $i + 1`
     HOSTFILE=${HF_DIR}/hosts_lins_${PROC_PER_HOST}proc.txt
     for ((exec=1;$exec<=$NUM_EXECS;exec+=1))
     do
