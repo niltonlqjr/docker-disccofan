@@ -15,7 +15,7 @@ do
     in_prefix_img=${INP_DIR}/dim_${d1}-${d2}-1/IMG_PHR1A__${d1}_${d2}_1
     for PROC_PER_HOST in `seq 1 ${lim_proc_host}`
     do
-        ${HOSTFILE}=${HF_DIR}/hosts_lins_${PROC_PER_HOST}proc.txt
+        HOSTFILE=${HF_DIR}/hosts_lins_${PROC_PER_HOST}proc.txt
         for ((exec=1;$exec<=3;exec+=1))
         do
             num_proc=`expr ${d1} '*' ${d2}`
