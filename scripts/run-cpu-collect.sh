@@ -1,6 +1,5 @@
-dims=('1 2' '3 4' '5 6')
+dims=('10 8' '12 8' '14 8' '16 11' '16 8' '4 4' '8 4' '8 8' '12 12' '16 10' '16 12' '8 6' )
 lim=`expr ${#dims[@]} - 1`
-
 
 script=/home/mpi/cpu_collect.py
 NUM_EXECS=5
