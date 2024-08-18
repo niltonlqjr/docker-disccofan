@@ -1,8 +1,8 @@
 dims=('1 2' '3 4' '5 6')
 lim=`expr ${#dims[@]} - 1`
 
-cur_dir=`pwd`
-script=$cur_dir/net_collect.py
+
+script=/home/mpi/net_collect.py
 NUM_EXECS=5
 
 OUT_PREFIX=/home/mpi/host/results-disccofan

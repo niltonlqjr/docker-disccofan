@@ -1,8 +1,8 @@
 dims=('1 2' '3 4' '5 6')
 lim=`expr ${#dims[@]} - 1`
 
-cur_dir=`pwd`
-script=$cur_dir/cpu_collect.py
+
+script=/home/mpi/cpu_collect.py
 NUM_EXECS=5
 
 OUT_PREFIX=/home/mpi/host/results-disccofan
@@ -20,7 +20,7 @@ do
         do
             output_complete_dir=${OUT_PREFIX}/dim_${d1}-${d2}-1/proc_per_host${PROC_PER_HOST}/
             echo "grid: ${d1},${d2},1 => np: ${num_proc}, per host: ${PROC_PER_HOST} , ${exec}"
-            python3 $script -c ${output_complete_dir}/cpu_out_exec${exec}.txt -m ${output_complete_dir}/mem_out_exec${exec}.txt -i 0.5 disccofan
+            python3 $script -p -c ${output_complete_dir}/cpu_out_exec${exec}.txt -m ${output_complete_dir}/mem_out_exec${exec}.txt -i 0.5 disccofan
         done
     done
 done
