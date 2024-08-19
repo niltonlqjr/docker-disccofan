@@ -19,6 +19,7 @@ do
         output_complete_dir=${OUT_PREFIX}/dim_${d1}-${d2}-1/procs_${num_proc}
         echo "grid: ${d1},${d2},1 => np: ${num_proc}, ${exec}"
         sudo python3 $script -o ${output_complete_dir}/network_out_exec${exec}.txt -i 0.5 disccofan
+        sleep 5
     done
 done
 

@@ -19,6 +19,7 @@ do
         output_complete_dir=${OUT_PREFIX}/dim_${d1}-${d2}-1/procs_${num_proc}/
         echo "grid: ${d1},${d2},1 => np: ${num_proc}, ${exec}"
         python3 $script -p -c ${output_complete_dir}/cpu_out_exec${exec}.txt -m ${output_complete_dir}/mem_out_exec${exec}.txt -i 0.5 disccofan
+        sleep 5
     done
 done
 

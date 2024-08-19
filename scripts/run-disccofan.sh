@@ -21,7 +21,7 @@ do
     do
         echo "grid: ${d1},${d2},1 => np: ${num_proc}, exec=${exec}"
         mpirun -np ${num_proc} --hostfile ${HOSTFILE} ./disccofan -g ${d1},${d2},1 --inprefix ${in_prefix_img} --intype JP2 --infile 1 --overlap 0
-        sleep 5
+        sleep 10
     done
 done
 
