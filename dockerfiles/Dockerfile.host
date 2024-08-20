@@ -14,7 +14,7 @@ RUN apt-get update \
     &&  apt-get install -y \
         vim git wget iputils-ping sudo htop net-tools locales \
         unzip sudo build-essential openssh-client openssh-server \
-        libomp-dev libncurses5-dev libpcap-dev python3-pip
+        libomp-dev libncurses5-dev libpcap-dev python3-pip pssh
 
 
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
@@ -96,6 +96,11 @@ RUN mkdir /home/mpi/host
 COPY scripts/init_container.sh /home/mpi/
 COPY scripts/cpu_collect.py /home/mpi/
 COPY scripts/net_collect.py /home/mpi/
+COPY scripts/run-network-collect.sh /home/mpi/
+
+COPY scripts/run-cpu-collect.sh /home/mpi/
+COPY scripts/run-disccofan.sh /home/mpi/
+
 
 RUN pip3 install psutil
 RUN sudo pip3 install psutil
@@ -103,7 +108,5 @@ RUN sudo pip3 install psutil
 RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
 
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /home/mpi/.bashrc
-
-RUN sudo apt-get install pssh -y
 
 CMD sudo service ssh start; bash
