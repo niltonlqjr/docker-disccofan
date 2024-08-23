@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFo
 
 parser.add_argument('directory',
                     help='directory containing files')
-parser.add_argument('--regular-expr', '-r', type=str, dest='regular_expr', default='*-SystemCPU-*',
+parser.add_argument('--regular-expr', '-r', type=str, dest='regular_expr', default='mem_out_*.txt',
                     help='regular expression to filenames')
 parser.add_argument('--output-figure', '-o', dest='out_name', default='cpu_usage_per_cpu.png',
                     help='figure name output')
@@ -25,7 +25,6 @@ regular_expr = args.regular_expr
 header = args.header
 fig_name = args.out_name
 column = args.column
-
 
 files = glob.glob(f'{directory}/{regular_expr}')
 
