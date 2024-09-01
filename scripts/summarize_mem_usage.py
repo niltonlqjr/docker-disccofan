@@ -31,7 +31,7 @@ files = glob.glob(f'{directory}/{regular_expr}')
 
 cpu_usage={}
 
-col_type = [float for i in range(11)]
+col_type = [float for i in range(4)]
 
 for fn in files:
     with open(fn) as f:

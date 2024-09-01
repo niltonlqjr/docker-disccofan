@@ -39,7 +39,7 @@ i=0
 for fn in cpu_usage:
     print(fn, cpu_usage[fn], len(cpu_usage[fn]))
     print('=======================================')
-    plt.plot(cpu_usage[fn][-100::],label=fn)
+    plt.plot(cpu_usage[fn],label=fn)
     
 
 print(fig_name)

@@ -113,12 +113,12 @@ class ProcessorMonitor:
                         f.write('User\tNice\tSystem\tIdle\
                                 \tio wait\tHardware Interrupts (irq)\tSoftware Interrupts (softirq)\t\
                                 Steal by other OSs\tGuest\tGuest Nice\n')
-                    for m in self.m:
-                        f.write("{user}\t{nice}\t{system}\t{idle}\t{iowait}\t{irq}\t{softirq}\t{steal}\t{guest}\t{guest}\t{guest_nice}\n".format(
-                            user=m[cpu_id].user,nice=m[cpu_id].nice,system=m[cpu_id].system,idle=m[cpu_id].idle,
-                            iowait=m[cpu_id].iowait,irq=m[cpu_id].irq,softirq=m[cpu_id].softirq,
-                            steal=m[cpu_id].steal,guest=m[cpu_id].guest,guest_nice=m[cpu_id].guest_nice)
-                        )
+                    cpu_measure = self.m[cpu_id]
+                    f.write("{user}\t{nice}\t{system}\t{idle}\t{iowait}\t{irq}\t{softirq}\t{steal}\t{guest}\t{guest}\t{guest_nice}\n".format(
+                        user=cpu_measure.user,nice=cpu_measure.nice,system=cpu_measure.system,idle=cpu_measure.idle,
+                        iowait=cpu_measure.iowait,irq=cpu_measure.irq,softirq=cpu_measure.softirq,
+                        steal=cpu_measure.steal,guest=cpu_measure.guest,guest_nice=cpu_measure.guest_nice)
+                    )
             return True
         else:
             return False
