@@ -313,5 +313,5 @@ with open(out_file,'w') as f:
     f.write('pid\tname\tdata sent\tdata recv\n')
     for key in procs:
         p=procs[key]
-        f.write(f'{p.pid}\t{p.name}\t{p.data_recv}\t{p.data_recv}\n')
+        f.write(f'{p.pid}\t{p.name}\t{p.data_sent}\t{p.data_recv}\n')
     
