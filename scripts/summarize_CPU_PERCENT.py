@@ -1,7 +1,7 @@
 import argparse
 import glob
 import utils
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -23,8 +23,9 @@ regular_expr = args.regular_expr
 header = args.header
 fig_name = args.out_name
 
-files = glob.glob(f'{directory}/{regular_expr}')
 
+glob_str = os.path.join(directory, regular_expr)
+files = glob.glob(glob_str)
 
 cpu_usage={}
 
