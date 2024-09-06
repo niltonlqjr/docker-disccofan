@@ -20,6 +20,8 @@ import glob
 import matplotlib.pyplot as plt
 import numpy as np
 
+from pathlib import Path
+
 def increase(transfer, source, dest, sent):
     if not source in transfer:
         transfer[source] = {}
@@ -54,7 +56,7 @@ args=parser.parse_args()
 directory = args.directory
 regular_expr = args.regular_expr
 header = args.header
-fig_name = args.out_name
+fig_prefix = args.out_name
 out_type = args.output_type
 
 transfer_to={}
@@ -89,27 +91,43 @@ for fn in files:
     k = list(transfer_to[fn].keys())
     max_transfer = transfer_to[fn][k[0]]
 
-    print(transfer_to[fn])
-    print(transfer_from[fn])
+    print(f'to:{transfer_to[fn]}')
+    print(f'from:{transfer_from[fn]}')
 
 bar_width=0.25
-for ip in transfer_to:
+for fn in files:
     data_plot_bar1 = []
     data_plot_bar2 = []
-    for pair_ip in transfer_to[ip]:
-        data_plot_bar1.append(transfer_to[ip][pair_ip])
-    for pair_ip in transfer_from[ip]:
-        data_plot_bar2.append(transfer_from[ip][pair_ip])
+    for ip in transfer_to[fn]:
+        for pair_ip in transfer_to[fn][ip]:
+            data_plot_bar1.append(transfer_to[fn][ip][pair_ip])
+
+
+    for ip in transfer_from[fn]:
+        for pair_ip in transfer_from[fn][ip]:
+            data_plot_bar2.append(transfer_from[fn][ip][pair_ip])
     
     x1=np.arange(len(data_plot_bar1))
     x2=np.arange(len(data_plot_bar2))
     
+
+
     fig = plt.figure()
     
+
+    file_path = Path(fn)
+
+    file_stem=file_path.stem
+
     ax = fig.add_subplot()
     ax.bar(x1 + 1, data_plot_bar1, bar_width, label='sent bytes')
     ax.bar(x2 + 2, data_plot_bar2, bar_width, label='recv bytes')
     ax.set_xlabel('data transfer')
-    fig_name=f'{fig_name}{ip}.{out_type}'
+    fig_name=f'{file_stem}-{ip}.{out_type}'
+
+    print(data_plot_bar1)
+    print(data_plot_bar1)
+    print(fig_name)
+
     plt.savefig(f'{fig_name}',dpi=200)
     
