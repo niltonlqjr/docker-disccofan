@@ -106,21 +106,28 @@ class ProcessorMonitor:
     def save_measures(self, filename: str, verbose: bool = False, header: bool = False):
         if verbose:
             print(f'saving system cpu usage')
+        ncpus = len(self.m[0])
+        header_cpu = [header for _ in range(ncpus)]
         if len(self.m) > 0:
-            for cpu_id in range(len(self.m[0])):
-                with open(f'{filename}-SystemCPU-{cpu_id}.txt','a') as f:
-                    if header:
-                        f.write('User\tNice\tSystem\tIdle\
-                                \tio wait\tHardware Interrupts (irq)\tSoftware Interrupts (softirq)\t\
-                                Steal by other OSs\tGuest\tGuest Nice\n')
-                    cpu_measure = self.m[cpu_id]
-                    f.write("{user}\t{nice}\t{system}\t{idle}\t{iowait}\t{irq}\t{softirq}\t{steal}\t{guest}\t{guest}\t{guest_nice}\n".format(
-                        user=cpu_measure.user,nice=cpu_measure.nice,system=cpu_measure.system,idle=cpu_measure.idle,
-                        iowait=cpu_measure.iowait,irq=cpu_measure.irq,softirq=cpu_measure.softirq,
-                        steal=cpu_measure.steal,guest=cpu_measure.guest,guest_nice=cpu_measure.guest_nice)
-                    )
+            print(self.m)
+            for measure in self.m:
+                for cpu_id in range(len(measure)):
+                    with open(f'{filename}-SystemCPU-{cpu_id}.txt','a') as f:
+                        if header_cpu[cpu_id]:
+                            f.write('User\tNice\tSystem\tIdle\
+                                    \tio wait\tHardware Interrupts (irq)\tSoftware Interrupts (softirq)\t\
+                                    Steal by other OSs\tGuest\tGuest Nice\n')
+                            header_cpu[cpu_id] = False
+                        cpu_measure = measure[cpu_id]
+                        f.write("{user}\t{nice}\t{system}\t{idle}\t{iowait}\t{irq}\t{softirq}\t{steal}\t{guest}\t{guest}\t{guest_nice}\n".format(
+                            user=cpu_measure.user,nice=cpu_measure.nice,system=cpu_measure.system,idle=cpu_measure.idle,
+                            iowait=cpu_measure.iowait,irq=cpu_measure.irq,softirq=cpu_measure.softirq,
+                            steal=cpu_measure.steal,guest=cpu_measure.guest,guest_nice=cpu_measure.guest_nice)
+                        )
+            self.m = []
             return True
         else:
+            self.m = []
             return False
 
 
@@ -202,8 +209,10 @@ print(write_header)
 
 while monitored_pids != {}:
     sleep(interval_time)
-    processor.insert_measure(psutil.cpu_times_percent(percpu=
-                                                      per_cpu))
+    measure = psutil.cpu_times_percent(percpu=per_cpu)
+    if per_cpu == False:
+        measure = [measure]
+    processor.insert_measure(measure)
     if len(processor) > buffer_size:
         processor.save_measures(out_file_cpu,
                                 verbose=verbose,
