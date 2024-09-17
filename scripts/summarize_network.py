@@ -1,4 +1,5 @@
-s_test='''pid	name	data sent	data recv
+s_test= \
+'''pid	name	data sent	data recv
 0	b'unknown TCP'	0	0
 0	b'10.30.1.3:49792-10.30.6.42:1034'	2380	2380
 0	b'10.30.1.3:43000-10.30.6.42:1033'	2196	2196
@@ -97,15 +98,19 @@ for fn in files:
 bar_width=0.25
 for fn in files:
     data_plot_bar1 = []
+    data_plot_label1 = [None]
     data_plot_bar2 = []
+    data_plot_label2 =[None]
     for ip in transfer_to[fn]:
         for pair_ip in transfer_to[fn][ip]:
+            data_plot_label1.append(pair_ip)
             data_plot_bar1.append(transfer_to[fn][ip][pair_ip])
 
 
     for ip in transfer_from[fn]:
         for pair_ip in transfer_from[fn][ip]:
             data_plot_bar2.append(transfer_from[fn][ip][pair_ip])
+            data_plot_label2.append(pair_ip)
     
     x1=np.arange(len(data_plot_bar1))
     x2=np.arange(len(data_plot_bar2))
@@ -120,13 +125,14 @@ for fn in files:
     file_stem=file_path.stem
 
     ax = fig.add_subplot()
-    ax.bar(x1 + 1, data_plot_bar1, bar_width, label='sent bytes')
-    ax.bar(x2 + 2, data_plot_bar2, bar_width, label='recv bytes')
+    ax.bar(x1+bar_width, data_plot_bar1, bar_width, label='sent bytes')   
+    ax.bar(x2-bar_width, data_plot_bar2, bar_width, label='recv bytes')
     ax.set_xlabel('data transfer')
+    ax.tick_params(labelrotation=45)
+    print(data_plot_label1,data_plot_bar1)
+    ax.set_xticklabels(data_plot_label1)
+    ax.legend()
     fig_name=f'{file_stem}-{ip}.{out_type}'
-
-    print(data_plot_bar1)
-    print(data_plot_bar1)
     print(fig_name)
 
     plt.savefig(f'{fig_name}',dpi=200)
