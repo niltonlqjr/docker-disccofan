@@ -12,4 +12,4 @@ echo "stopping ssh service, changing directory to '${dir_script}' and running sc
 sleep 5
 
 sudo service ssh stop
-cd ${dir_script} && ./run-container-host.sh
+cd ${dir_script} && ./run-container-host-non-interative.sh
