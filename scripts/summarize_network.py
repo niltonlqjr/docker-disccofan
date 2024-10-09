@@ -1,5 +1,7 @@
+#string format
 s_test= \
-'''pid	name	data sent	data recv
+'''
+pid	name	data sent	data recv
 0	b'unknown TCP'	0	0
 0	b'10.30.1.3:49792-10.30.6.42:1034'	2380	2380
 0	b'10.30.1.3:43000-10.30.6.42:1033'	2196	2196
@@ -49,8 +51,7 @@ parser.add_argument('--output-type', '-t', dest='output_type', default='png',
                     help='output figure type')
 parser.add_argument('--no-header', action='store_false', dest='header',
                     help='if file does not have the header in first line')
-parser.add_argument('--column', '-c', dest='column', default=0, type=int,
-                    help='column that will be plotted')
+
 
 args=parser.parse_args()
 

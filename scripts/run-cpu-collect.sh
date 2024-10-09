@@ -1,13 +1,6 @@
-#dims=( '4 4' '8 4' '8 6' '8 8' '10 8' '12 8' '14 8' '16 8' '12 12' '16 10' '16 11' '16 12' )
-#dims=('2 29' '4 29')
-#dims=('1 124' '2 62' '31 4' '4 31' '62 2' '124 1')
-dims=('4 4' '8 4' '8 8' '12 8' '16 12')
-
-lim=`expr ${#dims[@]} - 1`
+source vars_experiments.sh
 
 script=/home/mpi/cpu_collect.py
-NUM_EXECS=3
-
 OUT_PREFIX=/home/mpi/host/results-disccofan
 
 for i in `seq 0 $lim`
