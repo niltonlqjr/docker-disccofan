@@ -1,5 +1,7 @@
 dir_script=$1
 
+time=3
+
 if [ -z $1 ]
 then
     echo "Usage: $0 directory"
@@ -7,9 +9,13 @@ then
     exit 1
 fi
 
-echo "stopping ssh service, changing directory to '${dir_script}' and running script in 5 seconds"
-
-sleep 5
+echo "stopping ssh service, changing directory to '${dir_script}' and running script in ${time} seconds"
+for i in `seq ${time} -1 1`
+do
+    sleep 1
+    echo "$i seconds"
+done
 
 sudo service ssh stop
-cd ${dir_script} && ./run-container-host-non-interative.sh
+cd ${dir_script} 
+./run-container-host-non-interative.sh
