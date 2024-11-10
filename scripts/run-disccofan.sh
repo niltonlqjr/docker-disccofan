@@ -3,6 +3,8 @@ source vars_experiments.sh
 INP_DIR=/home/mpi/host/split
 HF_DIR=/home/mpi/host/hostfiles
 
+DISCCOFAN_DIR=/home/mpi/disccofan
+
 for i in `seq 0 $lim`
 do
     
@@ -15,7 +17,7 @@ do
     for ((exec=1;$exec<=$NUM_EXECS;exec+=1))
     do
         echo "grid: ${d1},${d2},1 => np: ${num_proc}, exec=${exec}"
-        mpirun -np ${num_proc} --hostfile ${HOSTFILE} ./disccofan -g ${d1},${d2},1 --inprefix ${in_prefix_img} --intype JP2 --infile 1 --overlap 0
+        mpirun -np ${num_proc} --hostfile ${HOSTFILE} ${DISCCOFAN_DIR}/disccofan -g ${d1},${d2},1 --inprefix ${in_prefix_img} --intype JP2 --infile 1 --overlap 0
         sleep 10
     done
 done
