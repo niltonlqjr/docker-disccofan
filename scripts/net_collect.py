@@ -235,7 +235,7 @@ parser.add_argument('-o', '--output', dest='out_file', type=str, default='output
                     help='output filename to network transfer (one mesure by time)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                     help='enable prints in stdout')
-parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.3,
+parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.5,
                     help='time between measures')
 
 

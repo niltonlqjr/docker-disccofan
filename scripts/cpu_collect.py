@@ -150,7 +150,7 @@ parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', defa
                     help='enable prints in stdout')
 parser.add_argument('-p', '--per-cpu', dest='per_cpu', action='store_true', default=False,
                     help='store the cpu (total cpu usage) usage per cpu')
-parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.3,
+parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.5,
                     help='time between measures')
 
 args=parser.parse_args()

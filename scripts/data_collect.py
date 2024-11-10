@@ -267,7 +267,7 @@ parser.add_argument('-b', '--buffer-size', dest='buffer_size', type=int, default
                     help='total of stored cpu measures before wirte in output file (0 = unlimeted)')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                     help='enable prints in stdout')
-parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=1,
+parser.add_argument('-i','--interval-time', dest='interval_time', type=float, default=0.5,
                     help='time between measures')
 parser.add_argument('--ignore-list', dest='block_list', type=list, nargs='*', default=['python3', 'systemd'],
                     help='process that will be ignore from store data (some network data transfer can'
