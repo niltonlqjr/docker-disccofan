@@ -19,3 +19,9 @@ def text_table_to_data(str_table, colum_types, header=True, field_sep=None):
         del lines[0]
     data = [line_to_list(l,columns_types=colum_types,field_sep=field_sep) for l in lines if l!='']
     return data
+
+@staticmethod
+def mean(lst):
+    if len(lst) > 0:
+        return sum(lst)/len(lst)
+    return 0
