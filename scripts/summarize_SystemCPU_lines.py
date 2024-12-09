@@ -46,7 +46,7 @@ for fn in files:
         cpu_usage[ip] = len([d[column] for d in all_data])
     elif cpu_usage[ip] != len([d[column] for d in all_data]):
         raise Exception(f"different number of columns for ip:{ìp}")
-    print(ip, cpu_usage[ip],len([d[column] for d in all_data]) )
+    
 fig = plt.figure()
 ax = fig.add_subplot()
 for fn in cpu_usage:
