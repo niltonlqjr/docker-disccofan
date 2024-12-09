@@ -40,15 +40,20 @@ col_type = [float for i in range(11)]
 for fn in files:
     with open(fn) as f:
         file_str = f.read()
+    ip = fn.split('@')[1].replace('.txt','')
     all_data = utils.text_table_to_data(file_str, colum_types=col_type, header=header)
-    cpu_usage[fn] = len([d[column] for d in all_data])
-
+    if not ip in cpu_usage:
+        cpu_usage[ip] = len([d[column] for d in all_data])
+    elif cpu_usage[ip] != len([d[column] for d in all_data]):
+        raise Exception(f"different number of columns for ip:{ìp}")
+    print(ip, cpu_usage[ip],len([d[column] for d in all_data]) )
 fig = plt.figure()
 ax = fig.add_subplot()
 for fn in cpu_usage:
     #print(fn, cpu_usage[fn])
     #print('=======================================')
-    names=[x.split('@')[1].replace('.txt','') for x in cpu_usage.keys()]
+    #names=[x.split('@')[1].replace('.txt','') for x in cpu_usage.keys()]
+    names=list(cpu_usage.keys())
     ax.bar(names, cpu_usage.values())
     ax.set_xticks(range(len(names)))
     ax.set_xticklabels(names, rotation=30)
