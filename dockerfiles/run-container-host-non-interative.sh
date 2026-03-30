@@ -8,7 +8,7 @@
 #import some common variables to build container
 source ./vars.sh
 
-ip=$1
+
 
 # args used to run container
 
@@ -35,6 +35,11 @@ else
     CONTAINER=$CONTAINER_NAME
 
     NETWORK_ARG=""
+fi
+
+if [ ! -z $1 ]
+then
+    NETWORK_ARG=$1
 fi
 
 #run container

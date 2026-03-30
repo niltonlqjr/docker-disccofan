@@ -37,6 +37,12 @@ else
     NETWORK_ARG=""
 fi
 
+if [ ! -z $1 ]
+then
+    NETWORK_ARG=$1
+fi
+
+
 #run container
 echo "${CONTAINER_CMD} ${RUN_CMD} ${CONTAINER_RUN_ARGS} ${NETWORK_ARG}\
   --env "SHELL=/bin/bash" \
