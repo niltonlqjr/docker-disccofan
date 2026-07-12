@@ -1,5 +1,7 @@
 dir_script=$1
 
+script=./run-container-host-non-interative.sh
+
 time=3
 
 if [ -z $1 ]
@@ -17,5 +19,4 @@ do
 done
 
 sudo service ssh stop
-cd ${dir_script} 
-./run-container-host-non-interative.sh
+cd ${dir_script} && ./${script}
