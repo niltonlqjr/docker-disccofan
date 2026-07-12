@@ -1,7 +1,6 @@
 dir_script=$1
 
-script=./run-container-host-non-interative.sh
-
+script=run-container-host-non-interative.sh
 time=3
 
 if [ -z $1 ]
@@ -10,6 +9,13 @@ then
     echo "where <directory> is the directory that contains scritp to start container"
     exit 1
 fi
+
+if [ ! -f "${dir_script}/${script}" ]
+then
+    echo "file ${dir_script}/${script} not found"
+    exit 1
+fi
+
 
 echo "stopping ssh service, changing directory to '${dir_script}' and running script in ${time} seconds"
 for i in `seq ${time} -1 1`
