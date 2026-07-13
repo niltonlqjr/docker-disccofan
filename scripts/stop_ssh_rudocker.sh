@@ -24,5 +24,4 @@ do
     echo "$i seconds"
 done
 
-sudo service ssh stop
-cd ${dir_script} && ./${script}
+sudo service ssh stop && cd ${dir_script} && ./${script}
