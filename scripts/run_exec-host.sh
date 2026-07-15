@@ -23,4 +23,4 @@ fi
 
 cd ${dir}
 ${pass} | sudo -S pwd
-./exec-host.sh
+./exec-host.sh &
