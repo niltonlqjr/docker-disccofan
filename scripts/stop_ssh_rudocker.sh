@@ -1,12 +1,20 @@
 dir_script=$1
 
+pass=$2
+
 script=run-container-host-non-interative.sh
 time=3
 
 if [ -z $1 ]
 then
-    echo "Usage: $0 directory"
+    echo "Usage: $0 directory password"
     echo "where <directory> is the directory that contains scritp to start container"
+    exit 1
+fi
+
+if [ -z $2 ]
+then
+    echo "Usage: $0 directory password"
     exit 1
 fi
 
@@ -24,6 +32,6 @@ do
     echo "$i seconds"
 done
 
-sudo service ssh stop 
+echo ${pass} | sudo -S service ssh stop 
 cd ${dir_script} 
 ./${script}
