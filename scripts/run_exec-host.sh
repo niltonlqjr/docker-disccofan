@@ -1,17 +1,34 @@
 dir=$1
-pass=$2
-
+file_cmd=$2
+pass=$3
 
 if [ -z $1 ]
 then
-    echo "Usage: $0 directory password"
-    echo "where <directory> is the directory that contains scritp to start exec-host.sh"
+    echo "Usage: $0 < directory > <comand file> <password>"
+    echo "where:" 
+    echo "   <directory> is the directory that contains scritp to start exec-host.sh"
+    echo "   <comand file> is the file containing the commands to execute"
+    echo "   <password> is the password"
     exit 1
 fi
 
 if [ -z $2 ]
 then
-    echo "Usage: $0 directory password"
+    echo "Usage: $0 < directory > <comand file> <password>"
+    echo "where:" 
+    echo "   <directory> is the directory that contains scritp to start exec-host.sh"
+    echo "   <comand file> is the file containing the commands to execute"
+    echo "   <password> is the password"
+    exit 1
+fi
+
+if [ -z $3 ]
+then
+    echo "Usage: $0 < directory > <comand file> <password>"
+    echo "where:" 
+    echo "   <directory> is the directory that contains scritp to start exec-host.sh"
+    echo "   <comand file> is the file containing the commands to execute"
+    echo "   <password> is the password"
     exit 1
 fi
 
@@ -21,6 +38,4 @@ then
     exit 1
 fi
 
-cd ${dir}
-echo ${pass} | sudo -S pwd
-./exec-host.sh &
+${dir}/exec-host.sh ${file_cmd} ${pass} &
