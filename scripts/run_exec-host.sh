@@ -38,4 +38,4 @@ then
     exit 1
 fi
 
-${dir}/exec-host.sh ${file_cmd} ${pass} &
+nohup ${dir}/exec-host.sh ${file_cmd} ${pass} &
