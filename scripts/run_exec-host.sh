@@ -22,5 +22,5 @@ then
 fi
 
 cd ${dir}
-${pass} | sudo -S pwd
+echo ${pass} | sudo -S pwd
 ./exec-host.sh &
