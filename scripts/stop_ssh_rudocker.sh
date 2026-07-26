@@ -24,6 +24,11 @@ then
     exit 1
 fi
 
+cd ${dir_script} 
+source ./vars.sh
+echo "deleting container ${CONTAINER_NAME} if it exists"
+docker rm -f ${CONTAINER_NAME}
+
 
 echo "stopping ssh service, changing directory to '${dir_script}' and running script in ${time} seconds"
 for i in `seq ${time} -1 1`
@@ -31,7 +36,5 @@ do
     sleep 1
     echo "$i seconds"
 done
-
 echo ${pass} | sudo -S service ssh stop 
-cd ${dir_script} 
 ./${script}
