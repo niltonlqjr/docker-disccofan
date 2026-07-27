@@ -6,8 +6,10 @@
 #############################################################################
 
 #import some common variables to build container
-source ./vars.sh
 
+script_path=`realpath $0 `
+script_dir=`dirname ${script_path}`
+source ${script_dir}/vars.sh
 
 
 # args used to run container
