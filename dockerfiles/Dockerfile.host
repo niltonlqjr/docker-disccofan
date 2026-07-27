@@ -84,12 +84,14 @@ RUN mkdir -p /home/mpi/.ssh
 
 COPY ssh_keys/* /home/mpi/.ssh/
 
-COPY ssh_config/config.host /home/mpi/.ssh/config
+COPY ssh_config/config /home/mpi/.ssh/config
+COPY ssh_config/sshd_config /etc/ssh/sshd_config
 
 RUN sudo chown mpi .ssh/*
 RUN sudo chgrp mpi .ssh/*
 
 RUN chmod 600 .ssh/*
+RUN chmod 644 /etc/ssh/sshd_config
 
 RUN mkdir /home/mpi/host
 
