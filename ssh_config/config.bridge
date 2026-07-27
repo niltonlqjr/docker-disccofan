@@ -1,4 +1,0 @@
-Host *
-    StrictHostKeyChecking no
-    PasswordAuthentication no
-    Port 2222
