@@ -64,7 +64,7 @@ RUN cd cfitsio-4.4.0 \
 
 #instalar hdf5
 RUN cd hdf5-1.14.3 \
-    && ./configure --prefix=/usr/local/hdf5 --enable-parallel \
+    && ./configure --prefix=/usr/local --enable-parallel \
     && make \
     && make install
 
@@ -73,6 +73,12 @@ RUN cd nethogs-0.8.6 \
     && sudo make install \
     && sudo make install install_lib
 
+ADD deps/libconfig-1.8.2.tar.gz /dependencies
+
+RUN cd libconfig-1.8.2 \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install
 
 RUN rm -rf /dependencies/*
 
@@ -111,6 +117,7 @@ RUN sudo pip3 install psutil
 RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && make
 
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /home/mpi/.bashrc
+RUN echo 'export CPATH="/usr/local/hdf5/include"' >> /home/mpi/.bashrc
 
 ADD test_image/ /home/mpi/test_image
 ADD scripts/run_test.sh /home/mpi
