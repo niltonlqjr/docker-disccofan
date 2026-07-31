@@ -1,6 +1,7 @@
 np=200
 hf=host/slots_lins.txt
-grid=10,20,1
+grid_comma=10,20,1
+grid=$(echo ${grid_comma} | awk -F',' '{print $1"_"$2"_"$3}')
 in_prefix=host/gigapixel_img/PHR1A/200_tiles/dim_${grid}/IMG_PHR1A__${grid}
 out_prefix=host/gigapixel_img/PHR1A/200_tiles_filtered/dim_${grid}/IMG_PHR1A__${grid}
 in_type=JP2
