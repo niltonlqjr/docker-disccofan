@@ -112,4 +112,11 @@ RUN git clone https://github.com/niltonlqjr/disccofan.git && cd disccofan && mak
 
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/hdf5/lib"' >> /home/mpi/.bashrc
 
+ADD test_image/ /home/mpi/test_image
+ADD scripts/run_test.sh /home/mpi
+ADD hostfile.txt /home/mpi/
+
+RUN sudo chown mpi -R /home/mpi
+RUN sudo chgrp mpi -R /home/mpi
+
 CMD sudo service ssh start; bash
