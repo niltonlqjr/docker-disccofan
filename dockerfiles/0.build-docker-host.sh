@@ -1,7 +1,8 @@
 
 script_path=`realpath $0 `
 script_dir=`dirname ${script_path}`
-source ${script_dir}/vars.sh
+cd ${script_dir}
+source ./vars.sh
 
 DOCKERFILE_NAME='Dockerfile'
 
